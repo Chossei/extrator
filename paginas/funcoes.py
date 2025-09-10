@@ -18,11 +18,11 @@ def adicionar_variavel():
                 tipo[indice] = st.text_input(label = 'Formato da variável')
         
         
-        if st.form_submit_button('Concluir'):
-            for indice_2 in range(5):
-                variaveis.append({
-                    'nome' : nome[indice_2],
-                    'descricao': descricao[indice_2],
-                    'tipo': tipo[indice_2]
-                })
+    if st.form_submit_button('Concluir'):
+        for indice_2 in range(5):
+            variaveis.append({
+                'nome' : nome[indice_2],
+                'descricao': descricao[indice_2],
+                'tipo': tipo[indice_2]
+            })
             
