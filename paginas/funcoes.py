@@ -5,60 +5,75 @@ def adicionar_variavel():
     """
     Formulário dentro de um diálogo para o usuário adicionar até 5 variáveis,
     especificando nome, descrição e tipo para cada uma.
+    A submissão só é permitida se pelo menos uma variável for nomeada.
     """
-    variaveis_coletadas = []
     OPCOES_TIPO = ["Texto", "Número sem casas decimais", "Número com casas decimais"]
-    # Usamos st.form para agrupar os inputs. O envio só ocorre ao clicar no botão.
+
     with st.form(key='form_variaveis'):
-        st.write("Preencha os campos para as variáveis que deseja extrair. Deixe o nome em branco para ignorar a linha.")
+        st.info("É obrigatório preencher pelo menos a primeira variável (Nome, Descrição e Formato).")
         st.divider()
 
         # Loop para criar 5 linhas de inputs para as variáveis
         for i in range(5):
-            col1, col2 = st.columns([1, 3])
+            col1, col2 = st.columns([1, 2])
             with col1:
-                # Usamos uma chave única e descritiva para cada input
                 st.text_input(
                     label='Nome da variável',
-                    key=f'nome_{i}',  # Chave única: 'nome_0', 'nome_1', etc.
+                    key=f'nome_{i}',
                     placeholder=f'Variável {i+1}'
                 )
-
-                # Trocamos text_input por selectbox para o usuário escolher uma opção
                 st.selectbox(
                     label='Formato da variável',
                     options=OPCOES_TIPO,
-                    key=f'tipo_{i}' # Chave única
+                    key=f'tipo_{i}'
                 )
             with col2:
                 st.text_area(
                     label='Descrição da variável',
-                    key=f'descricao_{i}', # Chave única e obrigatória
-                    placeholder='O que esta variável representa?'
+                    key=f'descricao_{i}',
+                    placeholder='O que esta variável representa?',
+                    height=135
                 )
-            st.divider()    
+            st.divider()
         
-        # O botão que, quando clicado, envia todos os dados do formulário de uma vez
+        # Para você ver o session_state em ação!
+        # Expanda para ver como os valores são armazenados em tempo real.
+        with st.expander("Clique aqui para ver como os dados são armazenados (Depuração)"):
+            st.write(st.session_state)
+
         submitted = st.form_submit_button('Concluir e Adicionar Variáveis')
 
-    # Após o envio do formulário, processamos os dados
     if submitted:
-        # Loop para ler os dados de cada uma das 5 linhas de inputs
+        variaveis_coletadas = []
+        pelo_menos_uma_preenchida = False
+
+        # --- NOVA LÓGICA DE VALIDAÇÃO ---
+        # Primeiro, verificamos se algum nome de variável foi preenchido.
         for i in range(5):
-            # Acessamos os valores usando as chaves que definimos, através do st.session_state
-            nome_variavel = st.session_state[f'nome_{i}']
+            if st.session_state[f'nome_{i}']: # Se o texto não for vazio...
+                pelo_menos_uma_preenchida = True
+                break # Encontramos um, não precisa checar o resto.
 
-            # Só adicionamos a variável à lista se o usuário tiver preenchido o nome
-            if nome_variavel:
-                variavel = {
-                    'nome': nome_variavel,
-                    'descricao': st.session_state[f'descricao_{i}'],
-                    'tipo': st.session_state[f'tipo_{i}']
-                }
-                variaveis_coletadas.append(variavel)
-        
-        # A função retorna a lista de dicionários com as variáveis preenchidas
-        st.rerun() # O rerun() é importante para fechar o diálogo e atualizar a tela principal
-
-    return variaveis_coletadas
+        # Se, após o loop, a flag continuar False, mostramos um erro.
+        if not pelo_menos_uma_preenchida:
+            st.error("Erro: Você deve preencher o nome de pelo menos uma variável para continuar.")
+        else:
+            # Se a validação passou, executamos a lógica original.
+            for i in range(5):
+                nome_variavel = st.session_state[f'nome_{i}']
+                if nome_variavel: # Coleta só os que têm nome
+                    variavel = {
+                        'nome': nome_variavel,
+                        'descricao': st.session_state[f'descricao_{i}'],
+                        'tipo': st.session_state[f'tipo_{i}']
+                    }
+                    variaveis_coletadas.append(variavel)
+            
+            # Use o st.session_state para passar os dados para a aplicação principal
+            if 'lista_de_variaveis' not in st.session_state:
+                st.session_state.lista_de_variaveis = []
+            
+            st.session_state.lista_de_variaveis.extend(variaveis_coletadas)
+            st.success(f"{len(variaveis_coletadas)} variável(is) adicionada(s) com sucesso!")
+    
             
