@@ -6,8 +6,6 @@ import PyPDF2
 import google.generativeai as genai
 import io
 import json
-from google.genai import types
-from google.generativeai.types import GenerationConfig
 from pydantic import create_model
 from pdf2image import convert_from_path
 
@@ -201,7 +199,7 @@ def estruturador(texto, variaveis):
   model = genai.GenerativeModel('gemini-2.5-flash')
 
 
-  generation_config = GenerationConfig(
+  generation_config = genai.GenerationConfig(
   response_mime_type='application/json',
   response_schema=list[DynamicSchema], # agora esperamos um array de objetos (varios individuos)
   temperature=0.0
