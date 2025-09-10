@@ -15,7 +15,7 @@ def adicionar_variavel():
 
         # Loop para criar 5 linhas de inputs para as variáveis
         for i in range(5):
-            col1, col2, col3 = st.columns([1, 2, 1])
+            col1, col2 = st.columns([1, 3])
             with col1:
                 # Usamos uma chave única e descritiva para cada input
                 st.text_input(
@@ -23,18 +23,18 @@ def adicionar_variavel():
                     key=f'nome_{i}',  # Chave única: 'nome_0', 'nome_1', etc.
                     placeholder=f'Variável {i+1}'
                 )
-            with col2:
-                st.text_area(
-                    label='Descrição da variável',
-                    key=f'descricao_{i}', # Chave única e obrigatória
-                    placeholder='O que esta variável representa?'
-                )
-            with col3:
+                
                 # Trocamos text_input por selectbox para o usuário escolher uma opção
                 st.selectbox(
                     label='Formato da variável',
                     options=OPCOES_TIPO,
                     key=f'tipo_{i}' # Chave única
+                )
+            with col2:
+                st.text_area(
+                    label='Descrição da variável',
+                    key=f'descricao_{i}', # Chave única e obrigatória
+                    placeholder='O que esta variável representa?'
                 )
         
         # O botão que, quando clicado, envia todos os dados do formulário de uma vez
