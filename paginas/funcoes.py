@@ -7,79 +7,77 @@ def adicionar_variavel():
     especificando nome, descrição e tipo para cada uma.
     A submissão só é permitida se pelo menos uma variável for nomeada.
     """
-    OPCOES_TIPO = ["Texto", "Número sem casas decimais", "Número com casas decimais"]
-
-    with st.form(key='form_variaveis'):
-        st.info("É obrigatório preencher pelo menos a primeira variável (Nome, Descrição e Formato).")
+        # --- O Formulário ---
+    with st.form(key="variaveis_form"):
+        st.subheader("📝 Adicionar Novas Variáveis")
+        st.write("Preencha os campos para as variáveis que deseja extrair. Deixe o nome em branco para ignorar a linha.")
         st.divider()
+
+        OPCOES_TIPO = ["Texto", "Número sem casas decimais", "Número com casas decimais"]
 
         # Loop para criar 5 linhas de inputs para as variáveis
         for i in range(5):
             col1, col2 = st.columns([1, 2])
             with col1:
-                st.text_input(
-                    label='Nome da variável',
-                    key=f'nome_{i}',
-                    placeholder=f'Variável {i+1}'
-                )
-                st.selectbox(
-                    label='Formato da variável',
-                    options=OPCOES_TIPO,
-                    key=f'tipo_{i}'
-                )
+                st.text_input(label=f'Nome da Variável {i+1}', key=f'nome_{i}')
+                st.selectbox(label='Formato', options=OPCOES_TIPO, key=f'tipo_{i}')
             with col2:
-                st.text_area(
-                    label='Descrição da variável',
-                    key=f'descricao_{i}',
-                    placeholder='O que esta variável representa?',
-                    height=150
-                )
+                st.text_area(label='Descrição', key=f'descricao_{i}', height=120)
             st.divider()
-        
-        # Para você ver o session_state em ação!
-        # Expanda para ver como os valores são armazenados em tempo real.
-        with st.expander("Clique aqui para ver como os dados são armazenados (Depuração)"):
-            st.write(st.session_state)
-        
-        botao_adiciona, botao_conclui = st.columns(2)
-        with botao_adiciona:
-            submitted = st.form_submit_button('Adicionar Variáveis')
-        with botao_conclui:
-            concluir = st.button('Concluir')
-    
+
+        # --- O SELETOR DE AÇÃO ---
+        acao = st.radio(
+            "Após adicionar, qual ação você deseja executar?",
+            ("Adicionar e continuar preenchendo", "Concluir e voltar para a tela inicial"),
+            key="acao_escolhida",
+            horizontal=True,
+        )
+
+        # --- BOTÃO ÚNICO DE SUBMISSÃO ---
+        submitted = st.form_submit_button("Executar Ação")
+
+    # --- LÓGICA APÓS A SUBMISSÃO ---
     if submitted:
         variaveis_coletadas = []
         pelo_menos_uma_preenchida = False
-
-        # --- NOVA LÓGICA DE VALIDAÇÃO ---
-        # Primeiro, verificamos se algum nome de variável foi preenchido.
+        
+        # Coleta os dados de todas as linhas preenchidas
         for i in range(5):
-            if st.session_state[f'nome_{i}']: # Se o texto não for vazio...
+            nome_variavel = st.session_state[f'nome_{i}']
+            if nome_variavel:
                 pelo_menos_uma_preenchida = True
-                break # Encontramos um, não precisa checar o resto.
+                variavel = {
+                    'nome': nome_variavel,
+                    'descricao': st.session_state[f'descricao_{i}'],
+                    'tipo': st.session_state[f'tipo_{i}']
+                }
+                variaveis_coletadas.append(variavel)
 
-        # Se, após o loop, a flag continuar False, mostramos um erro.
+        # Validação: verifica se pelo menos uma foi preenchida
         if not pelo_menos_uma_preenchida:
-            st.error("Erro: Você deve preencher o nome de pelo menos uma variável para continuar.")
+            st.error("Erro: Você deve preencher o nome de pelo menos uma variável.")
         else:
-            # Se a validação passou, executamos a lógica original.
-            for i in range(5):
-                nome_variavel = st.session_state[f'nome_{i}']
-                if nome_variavel: # Coleta só os que têm nome
-                    variavel = {
-                        'nome': nome_variavel,
-                        'descricao': st.session_state[f'descricao_{i}'],
-                        'tipo': st.session_state[f'tipo_{i}']
-                    }
-                    variaveis_coletadas.append(variavel)
-            
-            # Use o st.session_state para passar os dados para a aplicação principal
-            if 'lista_de_variaveis' not in st.session_state:
-                st.session_state.lista_de_variaveis = []
-            
+            # Adiciona as variáveis coletadas à lista principal na sessão
             st.session_state.lista_de_variaveis.extend(variaveis_coletadas)
-            st.success(f"{len(variaveis_coletadas)} variável(is) adicionada(s) com sucesso!")
-    
-    if concluir:
-        st.rerun()
+            
+            acao_selecionada = st.session_state.acao_escolhida
+
+            if acao_selecionada == "Adicionar e continuar preenchendo":
+                st.success(f"{len(variaveis_coletadas)} variável(is) adicionada(s)! Os campos foram mantidos caso queira editá-los ou pode preencher os campos vazios para adicionar mais.")
+                # O script continua e o formulário permanece na tela
+
+            elif acao_selecionada == "Concluir e voltar para a tela inicial":
+                # Para fechar o "diálogo" e atualizar a tela principal, usamos o rerun
+                # (Em um st.dialog(), isso fecharia o popup)
+                st.success("Ação concluída!")
+                with st.spinner("Voltando para a tela inicial..."):
+                    time.sleep(1)
+                st.rerun()
+
+    # Exibe a tabela de variáveis já adicionadas
+    if st.session_state.lista_de_variaveis:
+        st.subheader("Variáveis configuradas:")
+        st.table(st.session_state.lista_de_variaveis)
+    else:
+        st.info("Nenhuma variável foi adicionada ainda.")
           
