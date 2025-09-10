@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 
 @st.dialog('📝 Adicionar Novas Variáveis', width='large')
 def adicionar_variavel():
