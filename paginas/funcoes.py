@@ -30,7 +30,7 @@ def adicionar_variavel():
             "Após adicionar, o que você deseja fazer?",
             ("Adicionar e continuar preenchendo", "Concluir e voltar para a tela inicial"),
             key="acao_escolhida",
-            horizontal=True, use_container_width=True
+            horizontal=True, width='stretch'
         )
 
         # --- BOTÃO ÚNICO DE SUBMISSÃO ---
