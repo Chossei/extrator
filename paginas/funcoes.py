@@ -23,7 +23,7 @@ def adicionar_variavel():
                     key=f'nome_{i}',  # Chave única: 'nome_0', 'nome_1', etc.
                     placeholder=f'Variável {i+1}'
                 )
-                
+
                 # Trocamos text_input por selectbox para o usuário escolher uma opção
                 st.selectbox(
                     label='Formato da variável',
@@ -36,6 +36,7 @@ def adicionar_variavel():
                     key=f'descricao_{i}', # Chave única e obrigatória
                     placeholder='O que esta variável representa?'
                 )
+            st.divider()    
         
         # O botão que, quando clicado, envia todos os dados do formulário de uma vez
         submitted = st.form_submit_button('Concluir e Adicionar Variáveis')
