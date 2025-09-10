@@ -11,11 +11,11 @@ def adicionar_variavel():
         for indice in range(5):
             col1, col2, col3 = st.columns([1, 2, 1])
             with col1:
-                nome[indice] = st.text_input(label = 'Nome da variável')
+                nome[indice] = st.text_input(key = f'xx{indice+1}' label = 'Nome da variável')
             with col2:
                 descricao[indice] = st.text_area(label = 'Descrição breve da variável')
             with col3:
-                tipo[indice] = st.text_input(label = 'Formato da variável')
+                tipo[indice] = st.text_input(key =f'xx{indice}', label = 'Formato da variável')
         
         
     if st.form_submit_button('Concluir'):
