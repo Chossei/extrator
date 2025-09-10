@@ -11,17 +11,18 @@ def adicionar_variavel():
         for indice in range(5):
             col1, col2, col3 = st.columns([1, 2, 1])
             with col1:
-                nome[indice] = st.text_input()
+                nome[indice] = st.text_input(label = 'Nome da variável')
             with col2:
-                descricao[indice] = st.text_area()
+                descricao[indice] = st.text_area(label = 'Descrição breve da variável')
             with col3:
-                tipo[indice] = st.text_input()
+                tipo[indice] = st.text_input(label = 'Formato da variável')
         
-        submetido = st.form_submit_button('Concluir')
-        if submetido:
+        
+        if st.form_submit_button('Concluir'):
             for indice_2 in range(5):
                 variaveis.append({
                     'nome' : nome[indice_2],
                     'descricao': descricao[indice_2],
                     'tipo': tipo[indice_2]
                 })
+            
