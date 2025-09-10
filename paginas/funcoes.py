@@ -1,6 +1,6 @@
 import streamlit as st
 
-@st.dialog('Adicione até 5 variáveis para a busca', width='large')
+@st.dialog('📝 Adicionar Novas Variáveis', width='large')
 def adicionar_variavel():
     """
     Formulário dentro de um diálogo para o usuário adicionar até 5 variáveis,
@@ -9,7 +9,6 @@ def adicionar_variavel():
     """
         # --- O Formulário ---
     with st.form(key="variaveis_form"):
-        st.subheader("📝 Adicionar Novas Variáveis")
         st.write("Preencha os campos para as variáveis que deseja extrair. Deixe o nome em branco para ignorar a linha.")
         st.divider()
 
@@ -22,7 +21,7 @@ def adicionar_variavel():
                 st.text_input(label=f'Nome da Variável {i+1}', key=f'nome_{i}')
                 st.selectbox(label='Formato', options=OPCOES_TIPO, key=f'tipo_{i}')
             with col2:
-                st.text_area(label='Descrição', key=f'descricao_{i}', height=120)
+                st.text_area(label='Descrição', key=f'descricao_{i}', height=150)
             st.divider()
 
         # --- O SELETOR DE AÇÃO ---
