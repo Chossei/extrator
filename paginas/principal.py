@@ -1,5 +1,9 @@
 import streamlit as st
-from paginas.funcoes import adicionar_variavel
+from paginas.funcoes import (
+    adicionar_variavel,
+    extrator_texto,
+    estruturador
+)
 
 st.title('Extrator de Dados')
 st.markdown('Selecione as variáveis de interesse e extraia os respectivos dados do seu arquivo PDF!')
