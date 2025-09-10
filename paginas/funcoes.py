@@ -27,14 +27,14 @@ def adicionar_variavel():
 
         # --- O SELETOR DE AÇÃO ---
         acao = st.radio(
-            "Após adicionar, qual ação você deseja executar?",
+            "Após adicionar, o que você deseja fazer?",
             ("Adicionar e continuar preenchendo", "Concluir e voltar para a tela inicial"),
             key="acao_escolhida",
             horizontal=True,
         )
 
         # --- BOTÃO ÚNICO DE SUBMISSÃO ---
-        submitted = st.form_submit_button("Executar Ação")
+        submitted = st.form_submit_button("Prosseguir", use_container_width=True)
 
     # --- LÓGICA APÓS A SUBMISSÃO ---
     if submitted:

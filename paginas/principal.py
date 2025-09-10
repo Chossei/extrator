@@ -8,11 +8,11 @@ st.divider()
 if 'lista_de_variaveis' not in st.session_state:
     st.session_state.lista_de_variaveis = []
 
-st.header('Variáveis Atualmente Configuradas para Busca')
+st.subheader('Variáveis Atualmente Configuradas para Busca')
 if st.session_state.lista_de_variaveis:
     st.table(st.session_state.lista_de_variaveis)
 else:
     st.info('Nenhuma variável foi adicionada ainda.')
 
-if st.button('Adicionar variáveis'):
+if st.button('Adicionar variáveis', use_container_width=True):
     adicionar_variavel()
