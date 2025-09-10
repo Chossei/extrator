@@ -32,7 +32,7 @@ def adicionar_variavel():
                     label='Descrição da variável',
                     key=f'descricao_{i}',
                     placeholder='O que esta variável representa?',
-                    height=135
+                    height=150
                 )
             st.divider()
         
