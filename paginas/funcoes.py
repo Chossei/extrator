@@ -73,10 +73,4 @@ def adicionar_variavel():
                     time.sleep(1)
                 st.rerun()
 
-    # Exibe a tabela de variáveis já adicionadas
-    if st.session_state.lista_de_variaveis:
-        st.subheader("Variáveis configuradas:")
-        st.table(st.session_state.lista_de_variaveis)
-    else:
-        st.info("Nenhuma variável foi adicionada ainda.")
           
