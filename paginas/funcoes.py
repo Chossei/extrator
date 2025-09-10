@@ -2,7 +2,7 @@ import streamlit as st
 import time
 import pandas as pd
 import numpy as np
-import pypdf2
+import PyPDF2
 import google.generativeai as genai
 import io
 import json
@@ -223,7 +223,7 @@ def extrator_texto(caminho_arquivo: str, imagem = False):
     pagina_texto = ''
     try:
       with open(caminho_arquivo, 'rb') as pdf:
-        leitor = pypdf2.PdfReader(pdf)
+        leitor = PyPDF2.PdfReader(pdf)
         for pagina in leitor.pages:
           texto = pagina.extract_text() or ''
           pagina_texto += texto
@@ -235,7 +235,7 @@ def extrator_texto(caminho_arquivo: str, imagem = False):
       # caso contrário, caimos para o fluxo de imagens (scanned)
     except Exception as e:
     # se falhar qualquer coisa, prosseguimos para o fluxo de imagens
-        print(f"Erro na extração via pypdf2: {e}")
+        print(f"Erro na extração via PyPDF2: {e}")
 
 
   else:
