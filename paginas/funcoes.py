@@ -3,7 +3,7 @@ import streamlit as st
 
 @st.dialog('Adicione uma variável para a busca', width = 'large')
 def adicionar_variavel():
-    with st.form():
+    with st.form(key = 'xxx'):
         variaveis = [None] * 5
         nome = [None] * 5
         descricao = [None] * 5
