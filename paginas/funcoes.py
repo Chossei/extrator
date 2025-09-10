@@ -40,9 +40,13 @@ def adicionar_variavel():
         # Expanda para ver como os valores são armazenados em tempo real.
         with st.expander("Clique aqui para ver como os dados são armazenados (Depuração)"):
             st.write(st.session_state)
-
-        submitted = st.form_submit_button('Concluir e Adicionar Variáveis')
-
+        
+        botao_adiciona, botao_conclui = st.columns(2)
+        with botao_adiciona:
+            submitted = st.form_submit_button('Adicionar Variáveis')
+        with botao_conclui:
+            concluir = st.button('Concluir')
+    
     if submitted:
         variaveis_coletadas = []
         pelo_menos_uma_preenchida = False
@@ -76,4 +80,6 @@ def adicionar_variavel():
             st.session_state.lista_de_variaveis.extend(variaveis_coletadas)
             st.success(f"{len(variaveis_coletadas)} variável(is) adicionada(s) com sucesso!")
     
-            
+    if concluir:
+        st.rerun()
+          
