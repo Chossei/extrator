@@ -29,7 +29,7 @@ horizontal = True)
 pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
 
 
-if pdf is not None:
+if pdf and st.session_state.lista_de_variaveis:
     texto = extrator_texto(pdf, imagem = argumento_extrator)
     dados = estruturador(texto, variaveis = st.session_state.lista_de_variaveis)
     st.write(dados)
