@@ -230,7 +230,7 @@ def extrator_texto(caminho_arquivo: str, imagem : str):
         if pagina_texto.strip():
             return pagina_texto
       # caso contrário, caimos para o fluxo de imagens (scanned)
-      return ''
+        return ''
     except Exception as e:
     # se falhar qualquer coisa, prosseguimos para o fluxo de imagens
         print(f"Erro na extração via PyPDF2: {e}")
