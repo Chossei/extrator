@@ -24,25 +24,15 @@ else:
 if st.button('Adicionar variáveis', use_container_width=True):
     adicionar_variavel()
 
-
-st.subheader('Upload do arquivo PDF para extração dos dados')
-css_distribuido = """
-<style>
-    /* Encontra o container do radio pelo seu atributo 'role' */
-    div[role="radiogroup"] {
-        display: flex;
-        justify-content: space-between;
-    }
-</style>
-"""
-st.markdown(css_distribuido, unsafe_allow_html=True)
 argumento_extrator = st.radio('O arquivo PDF contém...', key='opa', options = ['texto', 'imagens', 'texto/imagens'],
 horizontal = True)
 pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
 
+
 if pdf is not None:
     texto = extrator_texto(pdf, imagem = argumento_extrator)
     dados = estruturador(texto, variaveis = st.session_state.lista_de_variaveis)
+    dados_csv = dados.to_csv(index=False).encode('utf-8')
     numero = np.random.randint(0, 1000)
-    st.download_button(label='Base de dados', data = dados, use_container_width=True,
+    st.download_button(label='Base de dados', data = dados_csv, use_container_width=True,
     file_name = f'base_{numero}')
