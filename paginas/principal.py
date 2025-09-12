@@ -26,10 +26,11 @@ if st.button('Adicionar variáveis', use_container_width=True):
 
 
 st.subheader('Upload do arquivo PDF para extração dos dados')
+argumento_extrator = st.radio('O arquivo PDF contém...', key='opa', options = ['texto', 'imagens', 'texto/imagens'])
 pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
 
 if pdf is not None:
-    texto = extrator_texto(pdf, imagem = True)
+    texto = extrator_texto(pdf, imagem = argumento_extrator)
     dados = estruturador(texto, variaveis = st.session_state.lista_de_variaveis)
     numero = np.random.randint(0, 1000)
     st.download_button(label='Base de dados', data = dados, use_container_width=True,

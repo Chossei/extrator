@@ -214,10 +214,10 @@ def estruturador(texto, variaveis):
 
   return pd.DataFrame(json.loads(response.text))          
 
-def extrator_texto(caminho_arquivo: str, imagem = False):
+def extrator_texto(caminho_arquivo: str, imagem : str):
 
   # caso 1: tentativa de extracao direta de texto
-  if not imagem:
+  if imagem == 'texto':
     pagina_texto = ''
     try:
       with open(caminho_arquivo, 'rb') as pdf:
