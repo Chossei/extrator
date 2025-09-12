@@ -220,17 +220,17 @@ def extrator_texto(caminho_arquivo: str, imagem : str):
   if imagem == 'texto':
     pagina_texto = ''
     try:
-      with open(caminho_arquivo, 'rb') as pdf:
         leitor = PyPDF2.PdfReader(pdf)
         for pagina in leitor.pages:
-          texto = pagina.extract_text() or ''
-          pagina_texto += texto
+            texto = pagina.extract_text() or ''
+            pagina_texto += texto
 
 
       # se a extracao direta retornou texto significativo, retornamos isso
       if pagina_texto.strip():
         return pagina_texto
       # caso contrário, caimos para o fluxo de imagens (scanned)
+      return ''
     except Exception as e:
     # se falhar qualquer coisa, prosseguimos para o fluxo de imagens
         print(f"Erro na extração via PyPDF2: {e}")
@@ -239,7 +239,8 @@ def extrator_texto(caminho_arquivo: str, imagem : str):
   else:
     # caso 2: tratar cada página como imagem e enviar para a Gemini (API genai)
     # renderiza as paginas como imagens (necessita pdf2image/poppler)
-    images = convert_from_bytes(caminho_arquivo, dpi=300)
+    file_bytes = caminho_arquivo.getvalue()
+    images = convert_from_bytes(file_bytes, dpi=300)
 
 
     # inicializa o cliente
