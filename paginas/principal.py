@@ -26,7 +26,8 @@ if st.button('Adicionar variáveis', use_container_width=True):
 
 
 st.subheader('Upload do arquivo PDF para extração dos dados')
-argumento_extrator = st.radio('O arquivo PDF contém...', key='opa', options = ['texto', 'imagens', 'texto/imagens'])
+argumento_extrator = st.radio('O arquivo PDF contém...', key='opa', options = ['texto', 'imagens', 'texto/imagens'],
+horizontal = True)
 pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
 
 if pdf is not None:
