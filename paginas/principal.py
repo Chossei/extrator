@@ -26,6 +26,16 @@ if st.button('Adicionar variáveis', use_container_width=True):
 
 
 st.subheader('Upload do arquivo PDF para extração dos dados')
+css_distribuido = """
+<style>
+    /* Encontra o container do radio pelo seu atributo 'role' */
+    div[role="radiogroup"] {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+"""
+st.markdown(css_distribuido, unsafe_allow_html=True)
 argumento_extrator = st.radio('O arquivo PDF contém...', key='opa', options = ['texto', 'imagens', 'texto/imagens'],
 horizontal = True)
 pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
