@@ -227,8 +227,8 @@ def extrator_texto(caminho_arquivo: str, imagem : str):
 
 
       # se a extracao direta retornou texto significativo, retornamos isso
-      if pagina_texto.strip():
-        return pagina_texto
+        if pagina_texto.strip():
+            return pagina_texto
       # caso contrário, caimos para o fluxo de imagens (scanned)
       return ''
     except Exception as e:
