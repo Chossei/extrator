@@ -32,6 +32,7 @@ pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
 if pdf is not None:
     texto = extrator_texto(pdf, imagem = argumento_extrator)
     dados = estruturador(texto, variaveis = st.session_state.lista_de_variaveis)
+    st.write(dados)
     dados_csv = dados.to_csv(index=False).encode('utf-8')
     numero = np.random.randint(0, 1000)
     st.download_button(label='Base de dados', data = dados_csv, use_container_width=True,
