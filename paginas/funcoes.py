@@ -174,10 +174,9 @@ def estruturador(texto, variaveis):
 
   # 1. Mapeia os tipos de string para tipos reais do Python
   type_mapping = {
-  'string': str,
-  'integer': int,
-  'float': float,
-  'boolean': bool
+  'Texto': str,
+  'Número sem casas decimais': int,
+  'Números com casas decimais': float,
   }
 
 
@@ -220,7 +219,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
   if imagem == 'texto':
     pagina_texto = ''
     try:
-        leitor = PyPDF2.PdfReader(pdf)
+        leitor = PyPDF2.PdfReader(caminho_arquivo)
         for pagina in leitor.pages:
             texto = pagina.extract_text() or ''
             pagina_texto += texto
