@@ -26,7 +26,7 @@ if st.button('Adicionar variáveis', use_container_width=True):
 
 
 st.subheader('Upload do arquivo PDF para extração dos dados')
-pdf = st.file_uploader(label = "", accept_multiple_files=True, type = 'pdf')
+pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
 
 if pdf is not None:
     texto = extrator_texto(pdf, imagem = True)

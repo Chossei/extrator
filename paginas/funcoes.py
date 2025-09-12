@@ -7,7 +7,7 @@ import google.generativeai as genai
 import io
 import json
 from pydantic import create_model
-from pdf2image import convert_from_path
+from pdf2image import convert_from_bytes
 
 @st.dialog('📝 Adicionar Novas Variáveis', width='large')
 def adicionar_variavel():
@@ -239,7 +239,7 @@ def extrator_texto(caminho_arquivo: str, imagem = False):
   else:
     # caso 2: tratar cada página como imagem e enviar para a Gemini (API genai)
     # renderiza as paginas como imagens (necessita pdf2image/poppler)
-    images = convert_from_path(caminho_arquivo, dpi=300)
+    images = convert_from_bytes(caminho_arquivo, dpi=300)
 
 
     # inicializa o cliente
