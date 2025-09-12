@@ -214,7 +214,7 @@ def estruturador(texto, variaveis):
 
   return pd.DataFrame(json.loads(response.text))          
 
-def extrator_texto(caminho_arquivo: str, imagem : str):
+def extrator_texto(caminho_arquivo, imagem : str):
 
   # caso 1: tentativa de extracao direta de texto
   if imagem == 'texto':
