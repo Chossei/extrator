@@ -40,6 +40,5 @@ if pdf and st.session_state.lista_de_variaveis:
             st.success('Ótimo! As variáveis configuradas foram encontradas!')
         dados_csv = dados.to_csv(index=False).encode('utf-8')
         numero = np.random.randint(0, 1000)
-    else:
         st.download_button(label='Baixar a base de dados', data = dados_csv, use_container_width=True,
         file_name = f'base_{numero}.csv')
