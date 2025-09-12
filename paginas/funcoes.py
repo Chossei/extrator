@@ -155,6 +155,7 @@ def estruturador(texto, variaveis):
   O texto fornecido pode ser texto corrido, uma tabela em formato Markdown, ou uma combinação de ambos.
   1.  **Se o texto for uma tabela Markdown:** Considere que cada linha (após o cabeçalho) representa um indivíduo distinto. Os cabeçalhos da tabela podem ajudar a identificar os campos.
   2.  **Se o texto for corrido (parágrafos):** Procure por menções a indivíduos dentro da prosa.
+  3. Se o texto tiver uma seção referências, com estruturas do tipo ABNT ou outras, ignore.
 
   **REGRAS PARA A SAÍDA JSON:**
   Após interpretar o texto, gere um único array JSON seguindo estas regras estritas:
@@ -268,6 +269,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
         a. Preserve rigorosamente a estrutura de linhas e colunas. Uma linha na imagem é uma linha no Markdown.
         b. Mantenha as células vazias.
         c. Mantenha a ordem exata das colunas.
+    4. Se identificar uma seção "referências", não transcreva essa seção.
 
     **FORMATO FINAL:**
     Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
