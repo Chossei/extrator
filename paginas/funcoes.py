@@ -224,13 +224,8 @@ def extrator_texto(caminho_arquivo, imagem : str):
         for pagina in leitor.pages:
             texto = pagina.extract_text() or ''
             pagina_texto += texto
-
-
-      # se a extracao direta retornou texto significativo, retornamos isso
-        if pagina_texto.strip():
-            return pagina_texto
       # caso contrário, caimos para o fluxo de imagens (scanned)
-        return ''
+        return pagina_texto
     except Exception as e:
     # se falhar qualquer coisa, prosseguimos para o fluxo de imagens
         print(f"Erro na extração via PyPDF2: {e}")
