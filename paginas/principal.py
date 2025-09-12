@@ -33,5 +33,6 @@ if pdf is not None:
     dados = estruturador(texto, variaveis = st.session_state.lista_de_variaveis)
 
 if dados:
-    numero = np.random.
-    st.download_button(label='Base de dados', data = dados, use_container_width=True)
+    numero = np.random.randint(0, 1000)
+    st.download_button(label='Base de dados', data = dados, use_container_width=True,
+    file_name = f'base_{numero}')
