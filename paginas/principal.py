@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 from paginas.funcoes import (
     adicionar_variavel,
     extrator_texto,
@@ -30,3 +31,7 @@ pdf = st.file_uploader(label = "", accept_multiple_files=True, type = 'pdf')
 if pdf is not None:
     texto = extrator_texto(pdf, imagem = True)
     dados = estruturador(texto, variaveis = st.session_state.lista_de_variaveis)
+
+if dados:
+    numero = np.random.
+    st.download_button(label='Base de dados', data = dados, use_container_width=True)
