@@ -240,6 +240,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
             texto = pagina.extract_text()
             if texto:
                 pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
+                print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
             else:
                 pagina_apenas_texto.append('-')
                 numero_da_pagina_com_imagem.append(numero_da_pagina)
@@ -302,6 +303,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 response = model.generate_content(conteudo_api)
                 if response.candidates:
                     pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
+                    print(f'Texto da Página com imagen (n°{indice + 1}) extraído com sucesso.')
             except Exception as e:
                 print(f'Erro na chamada do modelo para extrair texto da página {índice + 1}: {e}')
                 continue
