@@ -247,7 +247,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
             numero_da_pagina += 1
     except Exception as e:
         print(f"Erro na leitura via PyPDF2: {e}")
-        break
+        return 'Não foi possível ler o arquivo.'
 
     if numero_da_pagina_com_imagem:
         try:
