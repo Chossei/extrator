@@ -194,6 +194,7 @@ def estruturador(texto, variaveis):
   DynamicSchema = create_model('DynamicSchema', **field_definitions)
 
 
+  print(f"Enviando {len(texto)} caracteres para a API para estruturação.")
   # configuracao e chamada ao modelo
   genai.configure(api_key=st.secrets['GEMINI_API_KEY'])
   model = genai.GenerativeModel('gemini-2.5-flash')
