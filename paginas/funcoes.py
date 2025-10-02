@@ -245,6 +245,8 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 pagina_apenas_texto.append('-')
                 numero_da_pagina_com_imagem.append(numero_da_pagina)
             numero_da_pagina += 1
+        print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
+        print(f"Páginas marcadas para OCR: {numero_da_pagina_com_imagem}")
     except Exception as e:
         print(f"Erro na leitura via PyPDF2: {e}")
         return 'Não foi possível ler o arquivo.'
@@ -253,6 +255,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
         try:
             file_bytes = caminho_arquivo.getvalue()
             images = convert_from_bytes(file_bytes, dpi = 300)
+            print(f"pdf2image converteu {len(images)} páginas em imagens.")
         except Exception as e:
             print(f'Erro ao converter as páginas em imagem:{e}')
             return 'Não foi possível converter as páginas em imagem.'
@@ -261,6 +264,12 @@ def extrator_texto(caminho_arquivo, imagem : str):
         model = genai.GenerativeModel('gemini-2.5-flash')
 
         for indice in numero_da_pagina_com_imagem:
+            if indice >= len(images):
+                print(f"AVISO: A página {indice + 1} foi marcada para OCR, mas não pôde ser convertida em imagem. Pulando.")
+                # Substitui o placeholder por uma mensagem de erro
+                pagina_apenas_texto[indice] = f'-- Erro na conversão da página {indice + 1} --'
+                continue # Pula para a próxima iteração do loop
+        
             buf = io.BytesIO()
             images[indice].save(buf, format='JPEG', quality=95)
             img_bytes = buf.getvalue()
@@ -303,7 +312,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 response = model.generate_content(conteudo_api)
                 if response.candidates:
                     pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
-                    print(f'Texto da Página com imagen (n°{indice + 1}) extraído com sucesso.')
+                    print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
             except Exception as e:
                 print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
