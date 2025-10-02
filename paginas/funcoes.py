@@ -233,12 +233,14 @@ def extrator_texto(caminho_arquivo, imagem : str):
   elif imagem == 'texto/imagens':
     pagina_apenas_texto = []
     numero_da_pagina_com_imagem = []
+    limiar_texto = 50
+
     try:
         leitor = PyPDF2.PdfReader(caminho_arquivo)
         numero_da_pagina = 0
         for pagina in leitor.pages:
             texto = pagina.extract_text()
-            if texto:
+            if len(texto.strip()) > limiar_texto:
                 pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
                 print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
             else:
@@ -269,7 +271,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 # Substitui o placeholder por uma mensagem de erro
                 pagina_apenas_texto[indice] = f'-- Erro na conversão da página {indice + 1} --'
                 continue # Pula para a próxima iteração do loop
-        
+
             buf = io.BytesIO()
             images[indice].save(buf, format='JPEG', quality=95)
             img_bytes = buf.getvalue()
