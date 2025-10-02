@@ -255,7 +255,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
             images = convert_from_bytes(file_bytes, dpi = 300)
         except Exception as e:
             print(f'Erro ao converter as páginas em imagem:{e}')
-            break
+            return 'Não foi possível converter as páginas em imagem.'
         
         genai.configure(api_key = st.secrets['GEMINI_API_KEY'])
         model = genai.GenerativeModel('gemini-2.5-flash')
