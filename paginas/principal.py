@@ -26,7 +26,7 @@ if st.button('Adicionar variáveis', use_container_width=True):
 
 argumento_extrator = st.radio('O arquivo PDF contém...', key='opa', options = ['texto', 'imagens', 'texto/imagens'],
 horizontal = True)
-pdf = st.file_uploader(label = "", accept_multiple_files=False, type = 'pdf')
+pdf = st.file_uploader(label = "Faça o upload do seu arquivo PDF", accept_multiple_files=False, type = 'pdf')
 
 
 if pdf and st.session_state.lista_de_variaveis:

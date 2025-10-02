@@ -305,7 +305,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
                     pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
                     print(f'Texto da Página com imagen (n°{indice + 1}) extraído com sucesso.')
             except Exception as e:
-                print(f'Erro na chamada do modelo para extrair texto da página {índice + 1}: {e}')
+                print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
 
     resultado_final = '\n\n'.join(pagina_apenas_texto)
