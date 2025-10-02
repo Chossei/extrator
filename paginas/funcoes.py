@@ -230,6 +230,85 @@ def extrator_texto(caminho_arquivo, imagem : str):
     # se falhar qualquer coisa, prosseguimos para o fluxo de imagens
         print(f"Erro na extração via PyPDF2: {e}")
 
+  elif imagem == 'texto/imagens':
+    pagina_apenas_texto = []
+    numero_da_pagina_com_imagem = []
+    try:
+        leitor = PyPDF2.PdfReader(caminho_arquivo)
+        numero_da_pagina = 0
+        for pagina in leitor.pages:
+            texto = pagina.extract_text()
+            if texto:
+                pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
+            else:
+                pagina_apenas_texto.append('-')
+                numero_da_pagina_com_imagem.append(numero_da_pagina)
+            numero_da_pagina += 1
+    except Exception as e:
+        print(f"Erro na leitura via PyPDF2: {e}")
+        break
+
+    if numero_da_pagina_com_imagem:
+        try:
+            file_bytes = caminho_arquivo.getvalue()
+            images = convert_from_bytes(file_bytes, dpi = 300)
+        except Exception as e:
+            print(f'Erro ao converter as páginas em imagem:{e}')
+            break
+        
+        genai.configure(api_key = st.secrets['GEMINI_API_KEY'])
+        model = genai.GenerativeModel('gemini-2.5-flash')
+
+        for indice in numero_da_pagina_com_imagem:
+            buf = io.BytesIO()
+            images[indice].save(buf, format='JPEG', quality=95)
+            img_bytes = buf.getvalue()
+            prompt_para_pagina = f"""
+        Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
+
+        Siga este processo de dois passos:
+
+        **Passo 1: Análise Estrutural (Rascunho Mental)**
+        Primeiro, identifique todos os blocos de conteúdo distintos na página e sua ordem de leitura lógica. Os blocos podem ser: Títulos, Parágrafos, Listas, Tabelas, Imagens com Legendas, Cabeçalhos, Rodapés, etc.
+
+        **Passo 2: Transcrição Fiel**
+        Segundo, transcreva cada bloco que você identificou, na ordem correta, aplicando as regras de formatação abaixo.
+
+        **REGRAS DE TRANSCRIÇÃO:**
+
+        1.  **Fidelidade ao Original:** Não corrija erros, não complete frases e não adivinhe palavras. Se um trecho for ilegível, use o marcador `[ILEGÍVEL]`.
+        2.  **Texto Comum (Títulos, Parágrafos, Listas):** Transcreva como texto simples, usando quebras de linha para separar os parágrafos.
+        3.  **Tabelas:** Para blocos identificados como tabelas, use o formato **Markdown**:
+            a. Preserve rigorosamente a estrutura de linhas e colunas. Uma linha na imagem é uma linha no Markdown.
+            b. Mantenha as células vazias.
+            c. Mantenha a ordem exata das colunas.
+        4. Se identificar uma seção "referências", não transcreva essa seção.
+
+        **FORMATO FINAL:**
+        Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
+        """
+
+            # cada página é uma lista de partes (imagem + instrução textual)
+            conteudo_api = [
+                    {
+                        "mime_type": "image/jpeg",
+                        "data": buf.getvalue()
+                    },
+                    {
+                        "text": prompt_para_pagina
+                    }
+                ]
+            try:
+                response = model.generate_content(conteudo_api)
+                if response.candidates:
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
+            except Exception as e:
+                print(f'Erro na chamada do modelo para extrair texto da página {índice + 1}: {e}')
+                continue
+
+    resultado_final = '\n\n'.join(pagina_apenas_texto)
+    return resultado_final
+
 
   else:
     # caso 2: tratar cada página como imagem e enviar para a Gemini (API genai)
