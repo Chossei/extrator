@@ -196,8 +196,8 @@ def estruturador(texto, variaveis):
 
   print(f"Enviando {len(texto)} caracteres para a API para estruturação.")
   # configuracao e chamada ao modelo
-  genai.configure(api_key=st.secrets['GEMINI_API_KEY'])
-  model = genai.GenerativeModel('gemini-2.5-flash')
+  genai.configure(api_key=st.secrets['GEMINI_API_KEY_2'])
+  model = genai.GenerativeModel('gemini-2.5-pro')
 
 
   generation_config = genai.GenerationConfig(
@@ -316,6 +316,8 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 if response.candidates:
                     pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
                     print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
+                print('Aguardando 13 segundos para próxima chamada...')
+                time.sleep(13)
             except Exception as e:
                 print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
