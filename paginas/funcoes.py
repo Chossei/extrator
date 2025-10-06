@@ -153,7 +153,7 @@ def estruturador(texto, variaveis):
   Você é um especialista em extração de dados que recebe um texto e o converte em um array JSON de indivíduos.
 
   **REGRAS DE INTERPRETAÇÃO DO TEXTO DE ENTRADA:**
-  O texto fornecido pode ser texto corrido, uma tabela em formato Markdown, ou uma combinação de ambos.
+  O texto fornecido pode ser texto corrido, em formato Markdown, ou uma combinação de ambos.
   1.  **Se o texto for uma tabela Markdown:** Considere que cada linha (após o cabeçalho) representa um indivíduo distinto. Os cabeçalhos da tabela podem ajudar a identificar os campos.
   2.  **Se o texto for corrido (parágrafos):** Procure por menções a indivíduos dentro da prosa.
   3. Se o texto tiver uma seção referências, com estruturas do tipo ABNT ou outras, ignore.
@@ -277,31 +277,67 @@ def extrator_texto(caminho_arquivo, imagem : str):
             pix = pagina_fitz_imagem.get_pixmap(dpi=300)
             img_bytes=pix.tobytes(output='jpeg')
             buf = io.BytesIO(img_bytes)
-            prompt_para_pagina = f"""
-        Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
+        #     prompt_para_pagina = f"""
+        # Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
 
-        Siga este processo de dois passos:
+        # Siga este processo de dois passos:
 
-        **Passo 1: Análise Estrutural (Rascunho Mental)**
-        Primeiro, identifique todos os blocos de conteúdo distintos na página e sua ordem de leitura lógica. Os blocos podem ser: Títulos, Parágrafos, Listas, Tabelas, Imagens com Legendas, Cabeçalhos, Rodapés, etc.
+        # **Passo 1: Análise Estrutural (Rascunho Mental)**
+        # Primeiro, identifique todos os blocos de conteúdo distintos na página e sua ordem de leitura lógica. Os blocos podem ser: Títulos, Parágrafos, Listas, Tabelas, Imagens com Legendas, Cabeçalhos, Rodapés, etc.
 
-        **Passo 2: Transcrição Fiel**
-        Segundo, transcreva cada bloco que você identificou, na ordem correta, aplicando as regras de formatação abaixo.
+        # **Passo 2: Transcrição Fiel**
+        # Segundo, transcreva cada bloco que você identificou, na ordem correta, aplicando as regras de formatação abaixo.
 
-        **REGRAS DE TRANSCRIÇÃO:**
+        # **REGRAS DE TRANSCRIÇÃO:**
 
-        1.  **Fidelidade ao Original:** Não corrija erros, não complete frases e não adivinhe palavras. Se um trecho for ilegível, use o marcador `[ILEGÍVEL]`.
-        2.  **Texto Comum (Títulos, Parágrafos, Listas):** Transcreva como texto simples, usando quebras de linha para separar os parágrafos.
-        3.  **Tabelas:** Para blocos identificados como tabelas, use o formato **Markdown**:
-            a. Preserve rigorosamente a estrutura de linhas e colunas. Uma linha na imagem é uma linha no Markdown.
-            b. Mantenha as células vazias.
-            c. Mantenha a ordem exata das colunas.
-        4. Se identificar uma seção "referências", não transcreva essa seção.
+        # 1.  **Fidelidade ao Original:** Não corrija erros, não complete frases e não adivinhe palavras. Se um trecho for ilegível, use o marcador `[ILEGÍVEL]`.
+        # 2.  **Texto Comum (Títulos, Parágrafos, Listas):** Transcreva como texto simples, usando quebras de linha para separar os parágrafos.
+        # 3.  **Tabelas:** Para blocos identificados como tabelas, use o formato **Markdown**:
+        #     a. Preserve rigorosamente a estrutura de linhas e colunas. Uma linha na imagem é uma linha no Markdown.
+        #     b. Mantenha as células vazias.
+        #     c. Mantenha a ordem exata das colunas.
+        # 4. Se identificar uma seção "referências", não transcreva essa seção.
 
-        **FORMATO FINAL:**
-        Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
-        """
+        # **FORMATO FINAL:**
+        # Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
+        # """
+            prompt_para_pagina= f'''você é um analista de layout de documentos e especialista em ocr, o documento está em português do brasil (pt-br)
 
+objetivo
+- identificar os blocos de conteúdo da página e transcrever a página **em formato markdown**, fiel ao original, sem comentários extras
+
+regras gerais
+1) responda **apenas** com a transcrição em markdown, não inclua a análise do passo 1 nem qualquer meta-comentário  
+2) mantenha fidelidade total ao texto, não corrija nada, não complete frases, se um trecho estiver ilegível escreva exatamente: [ILEGÍVEL]  
+3) preserve quebras de linha e ordem dos blocos tal qual a leitura da página  
+4) não transcreva seções marcadas como "referências"  
+5) para imagens insira um marcador no ponto correspondente: `![IMAGE]` opcionalmente com legenda entre parênteses, ex: `![IMAGE] (legenda da imagem)`  
+6) tabelas devem ser convertidas para **markdown table** com pipes, preservando células vazias e a ordem de colunas  
+7) listas devem usar `-` para itens não ordenados e `1.` `2.` para ordenadas, preservando a hierarquia  
+
+formato de saída (obrigatório)
+- use cabeçalhos `#`, `##` quando identificar títulos/subtítulos  
+- parágrafos como blocos de texto separados por linha em branco  
+- tabelas em markdown com linha de separador `| --- | --- |` mesmo que não haja cabeçalho claro, preserve células vazias  
+- imagens como `![IMAGE] (legenda opcional)` no local onde aparecem  
+- marque textos ilegíveis com `[ILEGÍVEL]` inline  
+
+exemplo mínimo de saída esperada
+# Título da Página
+Parágrafo inicial da página que pode ocupar mais de uma linha
+
+## Subtítulo
+- item de lista 1
+- item de lista 2
+
+| coluna 1 | coluna 2 | coluna 3 |
+| --- | --- | --- |
+| valor A | valor B |  |
+|  | valor D | valor E |
+
+![IMAGE] (Legenda, se houver)
+
+fim, responda somente com a transcrição em markdown, nada além'''
             # cada página é uma lista de partes (imagem + instrução textual)
             conteudo_api = [
                     {
