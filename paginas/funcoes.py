@@ -239,6 +239,11 @@ def extrator_texto(caminho_arquivo, imagem : str):
     try:
         leitor = PyPDF2.PdfReader(caminho_arquivo)
         numero_da_pagina = 0
+        numero_paginas_reais = 381 # ou o número que você sabe que tem
+        numero_paginas_pypdf2 = len(leitor.pages)
+
+        print(f"DEBUG: O PDF deveria ter {numero_paginas_reais} páginas.")
+        print(f"DEBUG: PyPDF2 encontrou {numero_paginas_pypdf2} páginas.")
         for pagina in leitor.pages:
             texto = pagina.extract_text()
             if len(texto.strip()) > limiar_texto:
