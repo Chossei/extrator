@@ -238,10 +238,6 @@ def extrator_texto(caminho_arquivo, imagem : str):
 
     try:
         leitor = PyPDF2.PdfReader(caminho_arquivo)
-         # Abre o mesmo arquivo com fitz uma única vez antes do loop para eficiência
-        caminho_arquivo.seek(0)
-
-        doc_fitz = fitz.open(stream=caminho_arquivo.read(), filetype='pdf')
         numero_da_pagina = 0
         for pagina in leitor.pages:
             texto = pagina.extract_text()
@@ -249,23 +245,11 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
                 print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
             else:
-            # Usar fitz aqui para verificar se contém imagem. Se conter imagem, marca o número da página. Se não, deixa o conteúdo de texto extraído mesmo.
-                pagina_fitz = doc_fitz.load_page(numero_da_pagina)
-                if pagina_fitz.get_images(full=True):
-                    print(f'(Fitz) Página {numero_da_pagina+1} tem pouco texto E contém imagem. Marcando para OCR.')
-                    pagina_apenas_texto.append('-')
-                    numero_da_pagina_com_imagem.append(numero_da_pagina)
-                else:
-                    # Se não contém imagens, é apenas uma página com pouco texto (ex: folha de rosto, etc).
-                    # Nesse caso, mantemos o pouco texto que foi extraído.
-                    print(f'(Fitz) Página {numero_da_pagina+1} tem pouco texto mas NÃO contém imagem. Mantendo texto original.')
-                    pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
+                pagina_apenas_texto.append('-')
+                numero_da_pagina_com_imagem.append(numero_da_pagina)
             numero_da_pagina += 1
-        
-        doc_fitz.close()
         print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
         print(f"Páginas marcadas para OCR: {numero_da_pagina_com_imagem}")
-
     except Exception as e:
         print(f"Erro na leitura via PyPDF2: {e}")
         return 'Não foi possível ler o arquivo.'
