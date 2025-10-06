@@ -233,33 +233,34 @@ def extrator_texto(caminho_arquivo, imagem : str):
         print(f"Erro na extração via PyPDF2: {e}")
 
   elif imagem == 'texto/imagens':
-    pagina_apenas_texto = []
     numero_da_pagina_com_imagem = []
     limiar_texto = 280
 
     try:
         leitor = PyPDF2.PdfReader(caminho_arquivo)
+        total_paginas = len(leitor.pages)
+        pagina_apenas_texto =['-'] * total_paginas
 
         caminho_arquivo.seek(0)
         doc_fitz = fitz.open(stream=caminho_arquivo.read(),filetype='pdf')
         numero_da_pagina = 0
-        for pagina in leitor.pages:
+        for idx, pagina in enumerate(leitor.pages):
             texto = pagina.extract_text()
             if len(texto.strip()) > limiar_texto:
-                pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
+                pagina_apenas_texto[idx] = f'Página {numero_da_pagina+1}: {texto}'
                 print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
             else:
-                        # Usar fitz aqui para verificar se contém imagem. Se conter imagem, marca o número da página. Se não, deixa o conteúdo de texto extraído mesmo.
+                # Usar fitz aqui para verificar se contém imagem. Se conter imagem, marca o número da página. Se não, deixa o conteúdo de texto extraído mesmo.
                 pagina_fitz = doc_fitz.load_page(numero_da_pagina)
                 if pagina_fitz.get_images(full=True):
                     print(f'(Fitz) Página {numero_da_pagina+1} tem pouco texto E contém imagem. Marcando para OCR.')
-                    pagina_apenas_texto.append('-')
+                    pagina_apenas_texto[idx] = '-'
                     numero_da_pagina_com_imagem.append(numero_da_pagina)
                 else:
                     # Se não contém imagens, é apenas uma página com pouco texto (ex: folha de rosto, etc).
                     # Nesse caso, mantemos o pouco texto que foi extraído.
                     print(f'(Fitz) Página {numero_da_pagina+1} tem pouco texto mas NÃO contém imagem. Mantendo texto original.')
-                    pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
+                    pagina_apenas_texto[idx] = f'Página {numero_da_pagina+1}: {texto}'
 
             numero_da_pagina += 1
         print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
@@ -350,54 +351,13 @@ fim, responda somente com a transcrição em markdown, nada além'''
                 ]
             try:
                 response = model.generate_content(conteudo_api)
-
-                # defensivo: procurar texto dentro da estrutura retornada
-                extracted_text = None
-                if hasattr(response, 'candidates') and response.candidates:
-                    cand = response.candidates[0]
-                    # cand.content.parts pode ser lista de objetos ou dicts, tratamos ambos
-                    parts = getattr(cand.content, 'parts', None) or cand.content.get('parts', None) if isinstance(cand.content, dict) else None
-                    if parts and len(parts) > 0:
-                        for part in parts:
-                            # tenta acessar .text, se for objeto; se for dict, usa chave 'text'
-                            part_text = None
-                            if hasattr(part, 'text'):
-                                part_text = getattr(part, 'text', None)
-                            elif isinstance(part, dict) and 'text' in part:
-                                part_text = part.get('text')
-                            if part_text and str(part_text).strip():
-                                extracted_text = str(part_text).strip()
-                                break
-
-                # se não encontrou texto, logue o response para investigar e marque como falha
-                if not extracted_text:
-                    print(f'AVISO: não foi possível extrair texto estruturado da página {indice+1}, salvando fallback, respondo abaixo pra debug:')
-                    print(response)  # ou logger.debug(response)
-                    extracted_text = '[OCR_FAILED]'
-
-                # escreve o resultado no lugar correto, protegendo contra IndexError
-                if indice < len(pagina_apenas_texto):
-                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {extracted_text}'
-                else:
-                    # extensão da lista até o índice desejado (muito raro, mas seguro)
-                    while len(pagina_apenas_texto) < indice:
-                        pagina_apenas_texto.append('-')
-                    pagina_apenas_texto.append(f'Página {indice + 1}: {extracted_text}')
-
-                print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso (ou fallback).')
-                print('Aguardando 13 segundos para próxima chamada...')
-                time.sleep(13)
-
+                if response.candidates:
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].contents.parts[0].text}'
+                    print(f'Texto da Página com imagem (n° {indice + 1}) extraído com sucesso.')
+                    print('Aguardando 13 segundos para próxima chamada...')
+                    time.sleep(13)
             except Exception as e:
-                # captura exceptions da chamada em si (timeouts, 500, etc)
-                print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
-                # mantém o placeholder original ou marca explicitamente
-                if indice < len(pagina_apenas_texto):
-                    pagina_apenas_texto[indice] = f'Página {indice + 1}: [OCR_EXCEPTION]'
-                else:
-                    while len(pagina_apenas_texto) < indice:
-                        pagina_apenas_texto.append('-')
-                    pagina_apenas_texto.append(f'Página {indice + 1}: [OCR_EXCEPTION]')
+                print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}:{e}')
                 continue
 
         doc_fitz.close()
