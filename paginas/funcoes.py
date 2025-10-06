@@ -351,7 +351,7 @@ fim, responda somente com a transcrição em markdown, nada além'''
             try:
                 response = model.generate_content(conteudo_api)
                 if response.candidates:
-                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.text}'
                     print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
                 print('Aguardando 13 segundos para próxima chamada...')
                 time.sleep(13)
