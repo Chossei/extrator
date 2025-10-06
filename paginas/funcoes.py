@@ -197,7 +197,7 @@ def estruturador(texto, variaveis):
   print(f"Enviando {len(texto)} caracteres para a API para estruturação.")
   # configuracao e chamada ao modelo
   genai.configure(api_key=st.secrets['GEMINI_API_KEY_2'])
-  model = genai.GenerativeModel('gemini-2.5-pro')
+  model = genai.GenerativeModel('gemini-2.5-flash')
 
 
   generation_config = genai.GenerationConfig(
@@ -234,7 +234,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
   elif imagem == 'texto/imagens':
     pagina_apenas_texto = []
     numero_da_pagina_com_imagem = []
-    limiar_texto = 50
+    limiar_texto = 25
 
     try:
         leitor = PyPDF2.PdfReader(caminho_arquivo)
