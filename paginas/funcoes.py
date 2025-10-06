@@ -262,23 +262,13 @@ def extrator_texto(caminho_arquivo, imagem : str):
                     pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
 
             numero_da_pagina += 1
-
-        doc_fitz.close()
         print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
         print(f"Páginas marcadas para OCR: {numero_da_pagina_com_imagem}")
     except Exception as e:
         print(f"Erro na leitura via PyPDF2: {e}")
         return 'Não foi possível ler o arquivo.'
 
-    if numero_da_pagina_com_imagem:
-        try:
-            caminho_arquivo.seek(0)
-            arquivo_bytes_imagem = caminho_arquivo.read()
-            doc_fitz = fitz.open(stream=arquivo_bytes_imagem, filetype='pdf')
-        except Exception as e:
-            print(f'Erro ao converter as páginas em imagem:{e}')
-            return 'Não foi possível converter as páginas em imagem.'
-        
+    if numero_da_pagina_com_imagem: 
         genai.configure(api_key = st.secrets['GEMINI_API_KEY'])
         model = genai.GenerativeModel('gemini-2.5-flash')
 
@@ -334,6 +324,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
                 print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
 
+        doc_fitz.close()
     resultado_final = '\n\n'.join(pagina_apenas_texto)
     return resultado_final
 
