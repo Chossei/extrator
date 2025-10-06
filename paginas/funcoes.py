@@ -240,7 +240,9 @@ def extrator_texto(caminho_arquivo, imagem : str):
         with st.status('Processando PDF para identificar páginas para OCR...', expanded=True) as status:
             leitor = PyPDF2.PdfReader(caminho_arquivo)
             # Abre o mesmo arquivo com fitz uma única vez antes do loop para eficiência
-            doc_fitz = fitz.open(caminho_arquivo)
+            caminho_arquivo.seek(0)
+            bytes_arquivo = caminho_arquivo.read()
+            doc_fitz = fitz.open(stream=bytes_arquivo, filetype='pdf')
             numero_da_pagina = 0
             for pagina in leitor.pages:
                 texto = pagina.extract_text()
