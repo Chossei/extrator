@@ -6,7 +6,6 @@ import PyPDF2
 import google.generativeai as genai
 import io
 import json
-import pypdfium2 as pdfium
 from pydantic import create_model
 from pdf2image import convert_from_bytes
 
@@ -235,62 +234,49 @@ def extrator_texto(caminho_arquivo, imagem : str):
   elif imagem == 'texto/imagens':
     pagina_apenas_texto = []
     numero_da_pagina_com_imagem = []
-    limiar_texto = 25
+    limiar_texto = 80
 
     try:
-        # leitor = PyPDF2.PdfReader(caminho_arquivo)
-        # numero_da_pagina = 0
-        # numero_paginas_reais = 381 # ou o número que você sabe que tem
-        # numero_paginas_pypdf2 = len(leitor.pages)
-
-        # print(f"DEBUG: O PDF deveria ter {numero_paginas_reais} páginas.")
-        # print(f"DEBUG: PyPDF2 encontrou {numero_paginas_pypdf2} páginas.")
-        # for pagina in leitor.pages:
-        #     texto = pagina.extract_text()
-        #     if len(texto.strip()) > limiar_texto:
-        #         pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
-        #         print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
-        #     else:
-        #         pagina_apenas_texto.append('-')
-        #         numero_da_pagina_com_imagem.append(numero_da_pagina)
-        #     numero_da_pagina += 1
-        # print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
-        # print(f"Páginas marcadas para OCR: {numero_da_pagina_com_imagem}")
-        pdf = pdfium.PdfDocument(caminho_arquivo.get_value())
-        numero_total_paginas = len(pdf)
-        print(f'(pypdfium2) O arquivo tem {numero_total_paginas} páginas no total.')
-
-        for i in range(numero_total_paginas):
-            pagina = pdf.get_page(i)
-            texto = pagina.get_textpage().get_text_range()
-
+        leitor = PyPDF2.PdfReader(caminho_arquivo)
+        numero_da_pagina = 0
+        for pagina in leitor.pages:
+            texto = pagina.extract_text()
             if len(texto.strip()) > limiar_texto:
-                pagina_apenas_texto.append(f'Página {i+1}: {texto}')
-                print(f'(pypdfium2) Texto da página {i+1} extraído com sucesso.')
+                pagina_apenas_texto.append(f'Página {numero_da_pagina+1}: {texto}')
+                print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
             else:
-                pagina_apenas_texto.append(f'-- Placeholder para OCR da página {i+1} --')
-                numero_da_pagina_com_imagem.append(i)
-
-        print(f'Páginas marcadas para OCR: {[p + 1 for p in numero_da_pagina_com_imagem]}')
+                pagina_apenas_texto.append('-')
+                numero_da_pagina_com_imagem.append(numero_da_pagina)
+            numero_da_pagina += 1
+        print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
+        print(f"Páginas marcadas para OCR: {numero_da_pagina_com_imagem}")
     except Exception as e:
-        # print(f"Erro na leitura via PyPDF2: {e}")
-        print(f'Erro na leitura via pdfium:{e}')
+        print(f"Erro na leitura via PyPDF2: {e}")
         return 'Não foi possível ler o arquivo.'
 
     if numero_da_pagina_com_imagem:
-        genai.configure(api_key=st.secrets['GEMINI_API_KEY'])
+        try:
+            file_bytes = caminho_arquivo.getvalue()
+            images = convert_from_bytes(file_bytes, dpi = 300)
+            print(f"pdf2image converteu {len(images)} páginas em imagens.")
+        except Exception as e:
+            print(f'Erro ao converter as páginas em imagem:{e}')
+            return 'Não foi possível converter as páginas em imagem.'
+        
+        genai.configure(api_key = st.secrets['GEMINI_API_KEY'])
         model = genai.GenerativeModel('gemini-2.5-flash')
 
         for indice in numero_da_pagina_com_imagem:
-            try:
-                pagina = pdf.get_page(indice)
-                # Renderiza a página como uma imagem PIL com alta qualidade
-                imagem_pil = pagina.render(scale=300/72).to_pil()
+            if indice >= len(images):
+                print(f"AVISO: A página {indice + 1} foi marcada para OCR, mas não pôde ser convertida em imagem. Pulando.")
+                # Substitui o placeholder por uma mensagem de erro
+                pagina_apenas_texto[indice] = f'-- Erro na conversão da página {indice + 1} --'
+                continue # Pula para a próxima iteração do loop
 
-                # Converte a imagem para bytes
-                buf = io.BytesIO()
-                imagem_pil.save(buf, format='JPEG', quality=95)
-                prompt_para_pagina = f"""
+            buf = io.BytesIO()
+            images[indice].save(buf, format='JPEG', quality=95)
+            img_bytes = buf.getvalue()
+            prompt_para_pagina = f"""
         Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
 
         Siga este processo de dois passos:
@@ -314,95 +300,27 @@ def extrator_texto(caminho_arquivo, imagem : str):
         **FORMATO FINAL:**
         Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
         """
-                conteudo_api = [
-                    {"mime_type": "image/jpeg", "data": buf.getvalue()},
-                    {"text": prompt_para_pagina}
+
+            # cada página é uma lista de partes (imagem + instrução textual)
+            conteudo_api = [
+                    {
+                        "mime_type": "image/jpeg",
+                        "data": buf.getvalue()
+                    },
+                    {
+                        "text": prompt_para_pagina
+                    }
                 ]
-
-                print(f"Enviando página {indice + 1} para o Gemini (OCR)...")
+            try:
                 response = model.generate_content(conteudo_api)
-
                 if response.candidates:
-                    texto_extraido = response.candidates[0].content.parts[0].text
-                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {texto_extraido}'
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
                     print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
-                else:
-                    pagina_apenas_texto[indice] = f'-- Falha no OCR da página {indice + 1} --'
-                    print(f"Falha no OCR da página {indice + 1}: Sem candidato na resposta.")
-                
                 print('Aguardando 13 segundos para próxima chamada...')
                 time.sleep(13)
-
             except Exception as e:
-                print(f'Erro no processo de OCR para a página {indice + 1}: {e}')
-                pagina_apenas_texto[indice] = f'-- Erro no OCR da página {indice + 1}: {e} --'
+                print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
-        # try:
-        #     file_bytes = caminho_arquivo.getvalue()
-        #     images = convert_from_bytes(file_bytes, dpi = 300)
-        #     print(f"pdf2image converteu {len(images)} páginas em imagens.")
-        # except Exception as e:
-        #     print(f'Erro ao converter as páginas em imagem:{e}')
-        #     return 'Não foi possível converter as páginas em imagem.'
-        
-        # genai.configure(api_key = st.secrets['GEMINI_API_KEY'])
-        # model = genai.GenerativeModel('gemini-2.5-flash')
-
-        # for indice in numero_da_pagina_com_imagem:
-        #     if indice >= len(images):
-        #         print(f"AVISO: A página {indice + 1} foi marcada para OCR, mas não pôde ser convertida em imagem. Pulando.")
-        #         # Substitui o placeholder por uma mensagem de erro
-        #         pagina_apenas_texto[indice] = f'-- Erro na conversão da página {indice + 1} --'
-        #         continue # Pula para a próxima iteração do loop
-
-        #     buf = io.BytesIO()
-        #     images[indice].save(buf, format='JPEG', quality=95)
-        #     img_bytes = buf.getvalue()
-        #     prompt_para_pagina = f"""
-        # Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
-
-        # Siga este processo de dois passos:
-
-        # **Passo 1: Análise Estrutural (Rascunho Mental)**
-        # Primeiro, identifique todos os blocos de conteúdo distintos na página e sua ordem de leitura lógica. Os blocos podem ser: Títulos, Parágrafos, Listas, Tabelas, Imagens com Legendas, Cabeçalhos, Rodapés, etc.
-
-        # **Passo 2: Transcrição Fiel**
-        # Segundo, transcreva cada bloco que você identificou, na ordem correta, aplicando as regras de formatação abaixo.
-
-        # **REGRAS DE TRANSCRIÇÃO:**
-
-        # 1.  **Fidelidade ao Original:** Não corrija erros, não complete frases e não adivinhe palavras. Se um trecho for ilegível, use o marcador `[ILEGÍVEL]`.
-        # 2.  **Texto Comum (Títulos, Parágrafos, Listas):** Transcreva como texto simples, usando quebras de linha para separar os parágrafos.
-        # 3.  **Tabelas:** Para blocos identificados como tabelas, use o formato **Markdown**:
-        #     a. Preserve rigorosamente a estrutura de linhas e colunas. Uma linha na imagem é uma linha no Markdown.
-        #     b. Mantenha as células vazias.
-        #     c. Mantenha a ordem exata das colunas.
-        # 4. Se identificar uma seção "referências", não transcreva essa seção.
-
-        # **FORMATO FINAL:**
-        # Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
-        # """
-
-        #     # cada página é uma lista de partes (imagem + instrução textual)
-        #     conteudo_api = [
-        #             {
-        #                 "mime_type": "image/jpeg",
-        #                 "data": buf.getvalue()
-        #             },
-        #             {
-        #                 "text": prompt_para_pagina
-        #             }
-        #         ]
-        #     try:
-        #         response = model.generate_content(conteudo_api)
-        #         if response.candidates:
-        #             pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
-        #             print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
-        #         print('Aguardando 13 segundos para próxima chamada...')
-        #         time.sleep(13)
-        #     except Exception as e:
-        #         print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
-        #         continue
 
     resultado_final = '\n\n'.join(pagina_apenas_texto)
     return resultado_final
