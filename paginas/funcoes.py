@@ -350,13 +350,54 @@ fim, responda somente com a transcrição em markdown, nada além'''
                 ]
             try:
                 response = model.generate_content(conteudo_api)
-                if response.candidates:
-                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
-                    print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
+
+                # defensivo: procurar texto dentro da estrutura retornada
+                extracted_text = None
+                if hasattr(response, 'candidates') and response.candidates:
+                    cand = response.candidates[0]
+                    # cand.content.parts pode ser lista de objetos ou dicts, tratamos ambos
+                    parts = getattr(cand.content, 'parts', None) or cand.content.get('parts', None) if isinstance(cand.content, dict) else None
+                    if parts and len(parts) > 0:
+                        for part in parts:
+                            # tenta acessar .text, se for objeto; se for dict, usa chave 'text'
+                            part_text = None
+                            if hasattr(part, 'text'):
+                                part_text = getattr(part, 'text', None)
+                            elif isinstance(part, dict) and 'text' in part:
+                                part_text = part.get('text')
+                            if part_text and str(part_text).strip():
+                                extracted_text = str(part_text).strip()
+                                break
+
+                # se não encontrou texto, logue o response para investigar e marque como falha
+                if not extracted_text:
+                    print(f'AVISO: não foi possível extrair texto estruturado da página {indice+1}, salvando fallback, respondo abaixo pra debug:')
+                    print(response)  # ou logger.debug(response)
+                    extracted_text = '[OCR_FAILED]'
+
+                # escreve o resultado no lugar correto, protegendo contra IndexError
+                if indice < len(pagina_apenas_texto):
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {extracted_text}'
+                else:
+                    # extensão da lista até o índice desejado (muito raro, mas seguro)
+                    while len(pagina_apenas_texto) < indice:
+                        pagina_apenas_texto.append('-')
+                    pagina_apenas_texto.append(f'Página {indice + 1}: {extracted_text}')
+
+                print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso (ou fallback).')
                 print('Aguardando 13 segundos para próxima chamada...')
                 time.sleep(13)
+
             except Exception as e:
+                # captura exceptions da chamada em si (timeouts, 500, etc)
                 print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
+                # mantém o placeholder original ou marca explicitamente
+                if indice < len(pagina_apenas_texto):
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: [OCR_EXCEPTION]'
+                else:
+                    while len(pagina_apenas_texto) < indice:
+                        pagina_apenas_texto.append('-')
+                    pagina_apenas_texto.append(f'Página {indice + 1}: [OCR_EXCEPTION]')
                 continue
 
         doc_fitz.close()
