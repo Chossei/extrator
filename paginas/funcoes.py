@@ -239,28 +239,27 @@ def extrator_texto(caminho_arquivo, imagem : str):
     try:
         leitor = PyPDF2.PdfReader(caminho_arquivo)
         total_paginas = len(leitor.pages)
-        pagina_apenas_texto =['-'] * total_paginas
+        pagina_apenas_texto = ['-'] * total_paginas
 
         caminho_arquivo.seek(0)
         doc_fitz = fitz.open(stream=caminho_arquivo.read(),filetype='pdf')
         numero_da_pagina = 0
-        for idx, pagina in enumerate(leitor.pages):
+        for pagina in leitor.pages:
             texto = pagina.extract_text()
             if len(texto.strip()) > limiar_texto:
-                pagina_apenas_texto[idx] = f'Página {numero_da_pagina+1}: {texto}'
+                pagina_apenas_texto[numero_da_pagina] = (f'Página {numero_da_pagina+1}: {texto}')
                 print(f'(PyPDF2) Texto da Página {numero_da_pagina+1} extraída com sucesso.')
             else:
-                # Usar fitz aqui para verificar se contém imagem. Se conter imagem, marca o número da página. Se não, deixa o conteúdo de texto extraído mesmo.
+                        # Usar fitz aqui para verificar se contém imagem. Se conter imagem, marca o número da página. Se não, deixa o conteúdo de texto extraído mesmo.
                 pagina_fitz = doc_fitz.load_page(numero_da_pagina)
                 if pagina_fitz.get_images(full=True):
                     print(f'(Fitz) Página {numero_da_pagina+1} tem pouco texto E contém imagem. Marcando para OCR.')
-                    pagina_apenas_texto[idx] = '-'
                     numero_da_pagina_com_imagem.append(numero_da_pagina)
                 else:
                     # Se não contém imagens, é apenas uma página com pouco texto (ex: folha de rosto, etc).
                     # Nesse caso, mantemos o pouco texto que foi extraído.
                     print(f'(Fitz) Página {numero_da_pagina+1} tem pouco texto mas NÃO contém imagem. Mantendo texto original.')
-                    pagina_apenas_texto[idx] = f'Página {numero_da_pagina+1}: {texto}'
+                    pagina_apenas_texto[numero_da_pagina] = (f'Página {numero_da_pagina+1}: {texto}')
 
             numero_da_pagina += 1
         print(f"PyPDF2 encontrou {numero_da_pagina} páginas no total.")
@@ -352,12 +351,12 @@ fim, responda somente com a transcrição em markdown, nada além'''
             try:
                 response = model.generate_content(conteudo_api)
                 if response.candidates:
-                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].contents.parts[0].text}'
-                    print(f'Texto da Página com imagem (n° {indice + 1}) extraído com sucesso.')
-                    print('Aguardando 13 segundos para próxima chamada...')
-                    time.sleep(13)
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.candidates[0].content.parts[0].text}'
+                    print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
+                print('Aguardando 13 segundos para próxima chamada...')
+                time.sleep(13)
             except Exception as e:
-                print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}:{e}')
+                print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
 
         doc_fitz.close()
