@@ -272,9 +272,9 @@ def extrator_texto(caminho_arquivo, imagem : str):
 
     if numero_da_pagina_com_imagem:
         try:
-            file_bytes = caminho_arquivo.getvalue()
-            images = convert_from_bytes(file_bytes, dpi = 300)
-            print(f"pdf2image converteu {len(images)} páginas em imagens.")
+            caminho_arquivo.seek(0)
+            arquivo_bytes_imagem = caminho_arquivo.read()
+            doc_fitz = fitz.open(stream=arquivo_bytes_imagem, filetype='pdf')
         except Exception as e:
             print(f'Erro ao converter as páginas em imagem:{e}')
             return 'Não foi possível converter as páginas em imagem.'
@@ -283,14 +283,10 @@ def extrator_texto(caminho_arquivo, imagem : str):
         model = genai.GenerativeModel('gemini-2.5-flash')
 
         for indice in numero_da_pagina_com_imagem:
-            if indice >= len(images):
-                print(f"AVISO: A página {indice + 1} foi marcada para OCR, mas não pôde ser convertida em imagem. Pulando.")
-                # Substitui o placeholder por uma mensagem de erro
-                pagina_apenas_texto[indice] = f'-- Erro na conversão da página {indice + 1} --'
-                continue # Pula para a próxima iteração do loop
-
+            pagina_fitz_imagem = doc_fitz.load_page(indice)
+            pix = pagina_fitz.get_pixmap(dpi=300)
             buf = io.BytesIO()
-            images[indice].save(buf, format='JPEG', quality=95)
+            pix.save(buf, format='JPEG', quality=95)
             img_bytes = buf.getvalue()
             prompt_para_pagina = f"""
         Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
