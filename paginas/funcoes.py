@@ -274,7 +274,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
 
         for indice in numero_da_pagina_com_imagem:
             pagina_fitz_imagem = doc_fitz.load_page(indice)
-            pix = pagina_fitz.get_pixmap(dpi=300)
+            pix = pagina_fitz_imagem.get_pixmap(dpi=300)
             buf = io.BytesIO()
             pix.save(filename = buf, output='jpeg', jpg_quality=95)
             img_bytes = buf.getvalue()
