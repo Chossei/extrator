@@ -276,7 +276,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
             pagina_fitz_imagem = doc_fitz.load_page(indice)
             pix = pagina_fitz.get_pixmap(dpi=300)
             buf = io.BytesIO()
-            pix.save(buf, format='JPEG', quality=95)
+            pix.save(buf, 'jpeg', jpg_quality=95)
             img_bytes = buf.getvalue()
             prompt_para_pagina = f"""
         Você é um analista de layout de documentos e um especialista em OCR. Sua tarefa é interpretar a estrutura de uma página e, em seguida, transcrevê-la com precisão absoluta. O documento está em português do Brasil (pt-BR).
