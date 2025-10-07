@@ -245,7 +245,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
         doc_fitz = fitz.open(stream=caminho_arquivo.read(),filetype='pdf')
         numero_da_pagina = 0
         
-        with st.status(label = 'Processando o PDF...', expanded = True):
+        with st.status(label = 'Processando o PDF...', expanded = False):
             for pagina in leitor.pages:
                 texto = pagina.extract_text()
                 if len(texto.strip()) > limiar_texto:
@@ -351,31 +351,30 @@ fim, responda somente com a transcrição em markdown, nada além'''
                     }
                 ]
             try:
-                with st.status('Transformando imagens em texto...', expanded=True):
-                    response = model.generate_content(contents=conteudo_api,
-                    safety_settings=[
-                        types.SafetySetting(
-                            category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
-                            threshold=types.HarmBlockThreshold.BLOCK_NONE
-                        ),
-                        types.SafetySetting(
-                            category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                            threshold=types.HarmBlockThreshold.BLOCK_NONE
-                        ),
-                        types.SafetySetting(
-                            cattegory=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                            threshold=types.HarmBlockThreshold.BLOCK_NONE
-                        ),
-                        types.SafetySetting(
-                            category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                            threshold=types.HarmBlockThreshold.BLOCK_NONE
-                        )
-                    ])
-                    if response.candidates:
-                        pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.text}'
-                        st.write(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
-                    st.write('Aguardando 13 segundos para próxima chamada...')
-                    time.sleep(13)
+                response = model.generate_content(contents=conteudo_api,
+                safety_settings=[
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE
+                    ),
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE
+                    ),
+                    types.SafetySetting(
+                        cattegory=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE
+                    ),
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE
+                    )
+                ])
+                if response.candidates:
+                    pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.text}'
+                    print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
+                print('Aguardando 13 segundos para próxima chamada...')
+                time.sleep(13)
             except Exception as e:
                 print(f'Erro na chamada do modelo para extrair texto da página {indice + 1}: {e}')
                 continue
