@@ -359,7 +359,7 @@ fim, responda somente com a transcrição em markdown, nada além'''
                         'HARM_CATEGORY_SEXUALLY_EXPLICIT': 'BLOCK_NONE',
                         'HARM_CATEGORY_DANGEROUS_CONTENT': 'BLOCK_NONE'
                     }
-                ])
+                )
                 if response.candidates:
                     pagina_apenas_texto[indice] = f'Página {indice + 1}: {response.text}'
                     print(f'Texto da Página com imagem (n°{indice + 1}) extraído com sucesso.')
