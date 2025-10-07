@@ -7,7 +7,7 @@ import google.generativeai as genai
 import io
 import json
 import fitz
-from google.genai import types
+from google.generativeai import types
 from pydantic import create_model
 from pdf2image import convert_from_bytes
 
