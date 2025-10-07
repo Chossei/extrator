@@ -305,7 +305,7 @@ def extrator_texto(caminho_arquivo, imagem : str):
         # Sua saída final deve conter apenas a transcrição do Passo 2. Não inclua sua análise do Passo 1 nem qualquer outro comentário.
         # """
             prompt_para_pagina= f'''você é um analista de layout de documentos e especialista em ocr, o documento está em português do brasil (pt-br)
-
+Você não deve interpretar, resumir ou gerar conteúdo. Sua tarefa é transcrever o texto da imagem fornecida com precisão absoluta. Sua única função é agir como um serviço de OCR.
 objetivo
 - identificar os blocos de conteúdo da página e transcrever a página **em formato markdown**, fiel ao original, sem comentários extras
 
