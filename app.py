@@ -7,7 +7,7 @@ st.set_page_config(
 )
 
 if not st.user.is_logged_in:
-    _, col, _ = st.columns([1,3,1])
+    _, col, _ = st.columns([1,2,1])
     with col:
         login_card_html = """
         <style>
@@ -64,7 +64,7 @@ if not st.user.is_logged_in:
 </style>
 
 <div class="login-card">
-    <div class="login-icon"><i class="fa-solid fa-robot"></i></div> 
+    <div class="login-icon"><i class="fa-solid fa-brain"></i></div> 
     <h2>ExtractIA</h2>
     <p>Extraia dados de PDFs com inteligência artificial e receba outputs estruturados.</p>
 </div>
