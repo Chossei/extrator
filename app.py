@@ -64,9 +64,9 @@ if not st.user.is_logged_in:
 </style>
 
 <div class="login-card">
-    <div class="login-icon"><i class="fa-solid fa-brain"></i></div> 
+    <div class="login-icon"><i class="fa-solid fa-cubes"></i></div> 
     <h2>ExtractIA</h2>
-    <p>Extraia dados de PDFs com inteligência artificial e receba outputs estruturados.</p>
+    <p>Extraia dados de PDFs com inteligência artificial e receba bases de dados prontas para análises.</p>
 </div>
         """
         st.markdown(login_card_html, unsafe_allow_html = True)
