@@ -70,7 +70,7 @@ if not st.user.is_logged_in:
 </div>
         """
         st.markdown(login_card_html, unsafe_allow_html = True)
-        if st.button('Log in com o Google', use_container_width=True):
+        if st.button('Log in com o Google'):
             st.login()
 
 
