@@ -20,7 +20,9 @@ def usuario_login():
     Inicializa o Firebase Admin SDK se ainda não tiver sido inicializado
     e retorna uma instância do cliente do Firestore.
     """
+
     try:
+        db = inicializar_firebase()
         email_usuario = st.user.email
         doc_ref = db.collection("usuarios").document(email_usuario)
         doc = doc_ref.get()

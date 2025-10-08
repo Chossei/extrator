@@ -80,7 +80,6 @@ if not st.user.is_logged_in:
         if st.button('Log in com o Google', use_container_width=True):
             st.login()
 else:
-    db = inicializar_firebase()
     referencia_id = usuario_login()
     paginas = {
         'Menu' : [st.Page('paginas/principal.py', title = 'Extração dinâmica de dados', default = True),
