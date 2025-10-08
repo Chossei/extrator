@@ -7,7 +7,7 @@ st.set_page_config(
 )
 
 if not st.user.is_logged_in:
-    _, col, _ = st.columns([1,2,1])
+    _, col, _ = st.columns([4,2,4])
     with col:
         login_card_html = """
         <style>
