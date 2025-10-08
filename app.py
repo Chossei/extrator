@@ -1,4 +1,8 @@
 import streamlit as st
+from funcoes_firebase import (
+    inicializar_firebase,
+    usuario_login
+)
 
 st.set_page_config(
     page_title='ExtractIA',
@@ -75,9 +79,8 @@ if not st.user.is_logged_in:
         st.markdown(login_card_html, unsafe_allow_html = True)
         if st.button('Log in com o Google', use_container_width=True):
             st.login()
-
-
 else:
+    referencia_id = usuario_login()
     paginas = {
         'Menu' : [st.Page('paginas/principal.py', title = 'Extração dinâmica de dados', default = True),
         st.Page('paginas/historico.py', title = 'Visualização de extrações anteriores')]
