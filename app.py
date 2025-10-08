@@ -69,6 +69,7 @@ if not st.user.is_logged_in:
     <p>Extraia dados de PDFs com inteligência artificial e receba outputs estruturados.</p>
 </div>
         """
+        st.markdown(login_card_html)
         if st.button('Log in com o Google', use_container_width=True):
             st.login()
 
