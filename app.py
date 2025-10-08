@@ -64,7 +64,7 @@ if not st.user.is_logged_in:
 </style>
 
 <div class="login-card">
-    <div class="login-icon"><i class="fa-solid fa-solid-fa-wand-magic-sparkles"></i></div> 
+    <div class="login-icon"><i class="fa-solid fa-solid fa-wand-magic-sparkles"></i></div> 
     <h2>ExtractIA</h2>
     <p>Extraia dados de PDFs com inteligência artificial e receba bases de dados prontas para análises.</p>
 </div>
