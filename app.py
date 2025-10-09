@@ -82,13 +82,25 @@ if not st.user.is_logged_in:
 else:
     
     referencia_id = usuario_login()
+    with st.sidebar:
+        coluna1, coluna2 = st.columns([1, 3])
+        with coluna1:
+            st.markdown("""
+            <style>
+                [data-testid="stSidebar"] [data-testid="stImage"] img {
+                    border-radius: 50%;
+                }
+            </style>
+                """, unsafe_allow_html=True)
+            st.image(st.user.picture)
+        with coluna2:
+            st.write(f'Olá, **{st.user.name}**!')
+        if st.button('Log out', use_container_width=True):
+            st.logout()
+            
     paginas = {
         'Menu' : [st.Page('paginas/principal.py', title = 'Início', default = True),
         st.Page('paginas/historico.py', title = 'Histórico')]
     }
-
-
     pg = st.navigation(paginas)
     pg.run()
-    if st.sidebar.button('Log out', use_container_width = True):
-        st.logout()
