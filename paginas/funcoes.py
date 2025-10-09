@@ -14,7 +14,7 @@ from pdf2image import convert_from_bytes
 @st.dialog('📝 Adicionar Novas Variáveis', width='large')
 def adicionar_variavel():
     """
-    Formulário dentro de um diálogo para o usuário adicionar até 5 variáveis,
+    Formulário dentro de um diálogo para o usuário adicionar até 4 variáveis,
     especificando nome, descrição e tipo para cada uma.
     A submissão só é permitida se pelo menos uma variável for nomeada.
     """
@@ -26,7 +26,7 @@ def adicionar_variavel():
         OPCOES_TIPO = ["Texto", "Número sem casas decimais", "Número com casas decimais"]
 
         # Loop para criar 5 linhas de inputs para as variáveis
-        for i in range(5):
+        for i in range(4):
             col1, col2 = st.columns([1, 2])
             with col1:
                 st.text_input(label=f'Nome da Variável {i+1}', key=f'nome_{i}')
@@ -52,7 +52,7 @@ def adicionar_variavel():
         pelo_menos_uma_preenchida = False
         
         # Coleta os dados de todas as linhas preenchidas
-        for i in range(5):
+        for i in range(4):
             nome_variavel = st.session_state[f'nome_{i}']
             if nome_variavel:
                 pelo_menos_uma_preenchida = True
@@ -73,12 +73,10 @@ def adicionar_variavel():
             acao_selecionada = st.session_state.acao_escolhida
 
             if acao_selecionada == "Adicionar e continuar preenchendo":
-                st.success(f"{len(variaveis_coletadas)} variável(is) adicionada(s)! Os campos foram mantidos caso queira editá-los ou pode preencher os campos vazios para adicionar mais.")
+                st.success(f"{len(variaveis_coletadas)} variável(is) adicionada(s)! Preencha os campos novamente para adicionar mais variáveis.")
                 # O script continua e o formulário permanece na tela
 
             elif acao_selecionada == "Concluir e voltar para a tela inicial":
-                # Para fechar o "diálogo" e atualizar a tela principal, usamos o rerun
-                # (Em um st.dialog(), isso fecharia o popup)
                 st.success("Ação concluída!")
                 with st.spinner("Voltando para a tela inicial..."):
                     time.sleep(1)
@@ -215,7 +213,7 @@ def estruturador(texto, variaveis):
   )
 
 
-  return pd.DataFrame(json.loads(response.text))          
+  return json.loads(response.text)          
 
 def extrator_texto(caminho_arquivo, imagem : str):
 
