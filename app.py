@@ -1,5 +1,5 @@
 import streamlit as st
-from paginas.funcoes_firebase import (
+from pages.funcoes_firebase import (
     inicializar_firebase,
     usuario_login
 )
