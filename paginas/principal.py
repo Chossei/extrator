@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 from paginas.funcoes import (
     adicionar_variavel,
     extrator_texto,
