@@ -44,15 +44,15 @@ if selecionado:
             with st.container(border=True):
                 st.header(f"Resultados para: {selecionado}")
 
+                variaveis = pd.DataFrame(buscar_variaveis_de_modelo(nome_do_modelo=selecionado))
                 # UI: Usa métricas para dar um resumo rápido
                 col1, col2 = st.columns(2)
                 col1.metric("Total de registros encontrados", len(dataframe))
-                col2.metric("N° de variáveis do modelo", len(variaveis_do_modelo))
+                col2.metric("N° de variáveis do modelo", len(variaveis))
                 st.divider()
 
                 # UI: Usa tabs para separar a visualização dos dados e das variáveis
                 tab_dados, tab_variaveis = st.tabs(["Visualização da Base de Dados", "Variáveis do Modelo"])
-                variaveis = pd.DataFrame(buscar_variaveis_de_modelo(nome_do_modelo=selecionado))
                 with tab_dados:
                     st.dataframe(dataframe, use_container_width=True, hide_index=True)
                 
