@@ -101,7 +101,8 @@ else:
     referencia_id = usuario_login()
     with st.sidebar:
         with st.container():
-            
+        
+            st.divider()
             # O HTML para a imagem e o nome
             st.markdown(
                 f"""
