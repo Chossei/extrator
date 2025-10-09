@@ -95,7 +95,7 @@ pdf = st.file_uploader(label="Faça o upload do seu arquivo PDF", type='pdf')
 if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
     if st.button('Gerar base de dados', use_container_width=True):
         
-        texto = extrator_texto(pdf)
+        texto = extrator_texto(pdf, imagem = 'texto/imagens')
         st.success('Texto extraído com sucesso!')
 
         with st.spinner('Estruturando as variáveis...'):
