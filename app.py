@@ -95,10 +95,9 @@ else:
         if st.button('Log out', use_container_width=True):
             st.logout()
     
-        st.divider()
         st.header('Menu')
-        st.page_link("paginas/principal.py", label="Início", icon="🏠")
-        st.page_link("paginas/historico.py", label="Histórico", icon="📊")
+        st.page_link("pages/principal.py", label="Início", icon="🏠")
+        st.page_link("pages/historico.py", label="Histórico", icon="📊")
     # paginas = {
     #     'Menu' : [st.Page('paginas/principal.py', title = 'Início', default = True),
     #     st.Page('paginas/historico.py', title = 'Histórico')]
