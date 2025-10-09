@@ -84,19 +84,17 @@ else:
     # BLOCO CSS #
     st.markdown("""
         <style>
-            /* Alveja o container principal da sidebar e o transforma em um flex container vertical */
+            /* Torna o corpo da sidebar um "ponto de referência" para o posicionamento */
             [data-testid="stSidebar"] > div:first-child {
-                display: flex;
-                flex-direction: column;
-                
-                /* CORREÇÃO: Faz o container ocupar a altura quase total da tela */
-                /* Isso garante que o item no final seja empurrado para o fundo real da página */
-                height: calc(100vh - 2rem);
+                position: relative;
+                min-height: 95vh;
             }
 
-            /* Alveja o ÚLTIMO container dentro da sidebar (nosso perfil) e o empurra para baixo */
+            /* Alveja o ÚLTIMO container dentro da sidebar (nosso perfil) */
             [data-testid="stSidebar"] > div:first-child > div:last-child {
-                margin-top: auto;
+                position: absolute; /* Define o posicionamento como absoluto */
+                bottom: 40px;       /* Distância de 40px do fundo da sidebar */
+                width: 90%;         /* Define a largura para 90% da sidebar para ter margens laterais */
             }
         </style>
         """, unsafe_allow_html=True)
