@@ -23,30 +23,6 @@ st.divider()
 
 # CÓDIGO CORRIGIDO -----------------
 
-# Este bloco de CSS remove as bordas verticais da grade e do cabeçalho.
-css_para_esconder_bordas = """
-<style>
-    /* Alveja o container do DataFrame do Streamlit */
-    [data-testid="stDataFrame"] {
-        /* Remove a borda externa do container, se houver */
-        border: none;
-    }
-
-    /* Alveja as CÉLULAS de dados e remove a borda da direita */
-    [data-testid="stDataFrame"] [role="gridcell"] {
-        border-right: none;
-    }
-
-    /* Alveja os CABEÇALHOS e remove a borda da direita */
-    [data-testid="stDataFrame"] [role="columnheader"] {
-        border-right: none;
-    }
-</style>
-"""
-
-# Injeta o CSS na página
-st.markdown(css_para_esconder_bordas, unsafe_allow_html=True)
-
 # --- SELEÇÃO E CRIAÇÃO DE MODELOS ---
 
 # Verificando se existem modelos de variáveis já prontos
