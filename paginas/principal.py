@@ -111,7 +111,7 @@ if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
             st.success('Ótimo! As variáveis configuradas foram encontradas e armazenadas!')
             # CORREÇÃO 3: Criar o DataFrame diretamente dos dados extraídos, sem nova consulta
             if dados_extraidos:
-                if st_button('Gerar base de dados atual', use_container_width=True):
+                if st.button('Gerar base de dados atual', use_container_width=True):
                     try:
                         dataframe = criar_base(modelo_ativo)
                         st.write(dataframe)
