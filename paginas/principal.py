@@ -97,7 +97,7 @@ if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
     if st.button('Gerar base de dados', use_container_width=True):
         
         texto = extrator_texto(pdf, imagem = 'texto/imagens')
-        st.success('Texto extraído com sucesso!')
+        st.success('Pronto! A extração foi realizada com sucesso.')
 
         with st.spinner('Estruturando as variáveis...'):
             dados_extraidos = estruturador(texto, variaveis=st.session_state.lista_de_variaveis)
@@ -108,8 +108,8 @@ if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
             # CORREÇÃO 3: Criar o DataFrame diretamente dos dados extraídos, sem nova consulta
             if dados_extraidos:
                 dataframe = pd.DataFrame(dados_extraidos)
+                st.success('Ótimo! As variáveis configuradas foram encontradas!')
                 st.write(dataframe)
-                st.success('Variáveis estruturadas com sucesso!')
                 
                 # Oferece o download
                 dados_csv = dataframe.to_csv(index=False).encode('utf-8')
