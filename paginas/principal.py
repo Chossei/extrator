@@ -55,7 +55,7 @@ if nome_do_modelo_selecionado != 'Nenhum (Criar novo)':
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button('Adicionar/Editar variáveis', use_container_width=True):
+        if st.button('Adicionar variáveis', use_container_width=True):
             adicionar_variavel() # O ideal é que esta tela permita editar também
     with col2:
         if st.button('Salvar alterações no modelo', use_container_width=True):
@@ -94,7 +94,7 @@ pdf = st.file_uploader(label="Faça o upload do seu arquivo PDF", type='pdf')
 
 # CORREÇÃO 1 (continuação): A condição agora usa a variável 'modelo_ativo'
 if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
-    if st.button('Gerar base de dados', use_container_width=True):
+    if st.button('Salvar informações no banco de dados', use_container_width=True):
         
         texto = extrator_texto(pdf, imagem = 'texto/imagens')
         st.success('Pronto! A extração foi realizada com sucesso.')
@@ -104,21 +104,24 @@ if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
             
             # CORREÇÃO 1 e 3: Usar 'modelo_ativo' e salvar a extração
             salvar_extracao(nome_modelo_usado=modelo_ativo, nome_arquivo=pdf.name, dados_extraidos=dados_extraidos)
-
+            st.success('Ótimo! As variáveis configuradas foram encontradas e armazenadas!')
             # CORREÇÃO 3: Criar o DataFrame diretamente dos dados extraídos, sem nova consulta
             if dados_extraidos:
-                dataframe = pd.DataFrame(dados_extraidos)
-                st.success('Ótimo! As variáveis configuradas foram encontradas!')
-                st.write(dataframe)
-                
-                # Oferece o download
-                dados_csv = dataframe.to_csv(index=False).encode('utf-8')
-                st.download_button(
-                    label='Baixar a base de dados',
-                    data=dados_csv,
-                    file_name=f'base_{modelo_ativo}.csv',
-                    use_container_width=True
-                )
+                if st_button('Gerar base de dados atual', use_container_width=True):
+                    try:
+                        dataframe = criar_base(modelo_ativo)
+                        st.write(dataframe)
+                        
+                        # Oferece o download
+                        dados_csv = dataframe.to_csv(index=False).encode('utf-8')
+                        st.download_button(
+                            label='Baixar a base de dados',
+                            data=dados_csv,
+                            file_name=f'base_{modelo_ativo}.csv',
+                            use_container_width=True
+                        )
+                    except Exception as erro:
+                        print(f'Erro ao procurar as variáveis no firebase:{erro}')
             else:
                 st.warning("Nenhuma das variáveis configuradas foi encontrada no texto.")
 else:
