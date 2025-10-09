@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pages.funcoes_firebase import (
+from paginas.funcoes_firebase import (
     verificar_existencia_modelos,
     buscar_nomes_dos_modelos,
     buscar_variaveis_de_modelo,

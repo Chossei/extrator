@@ -1,13 +1,13 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from pages.funcoes import (
+from paginas.funcoes import (
     adicionar_variavel,
     extrator_texto,
     estruturador
 )
 
-from pages.funcoes_firebase import (
+from paginas.funcoes_firebase import (
     inicializar_firebase,
     verificar_existencia_modelos,
     buscar_nomes_dos_modelos,

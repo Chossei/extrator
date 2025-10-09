@@ -1,5 +1,5 @@
 import streamlit as st
-from pages.funcoes_firebase import (
+from paginas.funcoes_firebase import (
     inicializar_firebase,
     usuario_login
 )
@@ -95,12 +95,9 @@ else:
         if st.button('Log out', use_container_width=True):
             st.logout()
     
-        st.header('Menu')
-        st.page_link("pages/principal.py", label="Início", icon="🏠")
-        st.page_link("pages/historico.py", label="Histórico", icon="📊")
-    # paginas = {
-    #     'Menu' : [st.Page('paginas/principal.py', title = 'Início', default = True),
-    #     st.Page('paginas/historico.py', title = 'Histórico')]
-    # }
-    # pg = st.navigation(paginas)
-    # pg.run()
+    paginas = {
+        'Menu' : [st.Page('paginas/principal.py', title = 'Início', default = True),
+        st.Page('paginas/historico.py', title = 'Histórico')]
+    }
+    pg = st.navigation(paginas)
+    pg.run()
