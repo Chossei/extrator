@@ -46,20 +46,8 @@ if selecionado:
 
                 # UI: Usa métricas para dar um resumo rápido
                 col1, col2 = st.columns(2)
-                col1.metric("Total de Registros Encontrados", len(dataframe))
-                
-                # Prepara os dados para download (fazemos isso uma vez aqui)
-                dados_csv = dataframe.to_csv(index=False).encode('utf-8')
-                
-                with col2:
-                    # UI: Posiciona o botão de download de forma destacada
-                    st.download_button(
-                        label="📥 Baixar Base Completa (.csv)",
-                        data=dados_csv,
-                        file_name=f'base_{selecionado}.csv',
-                        use_container_width=True
-                    )
-
+                col1.metric("Total de registros encontrados", len(dataframe))
+                col2.metric("N° de variáveis do modelo", len(variaveis_do_modelo))
                 st.divider()
 
                 # UI: Usa tabs para separar a visualização dos dados e das variáveis
@@ -73,5 +61,14 @@ if selecionado:
                     variaveis = pd.DataFrame(buscar_variaveis_de_modelo(nome_do_modelo=selecionado))
                     # UI: Usa st.dataframe para consistência visual
                     st.dataframe(variaveis, use_container_width=True, hide_index=True)
-    else:
+                
+                # Prepara os dados para download (fazemos isso uma vez aqui)
+                dados_csv = dataframe.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label = "📥 Baixar Base Completa (.csv)",
+                    data=dados_csv,
+                    file_name=f'base_{selecionado}.csv',
+                    use_container_width=True
+                )
+    else:       
         st.error("Ocorreu um erro ao buscar os dados. Tente novamente.")
