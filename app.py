@@ -88,7 +88,10 @@ else:
             [data-testid="stSidebar"] > div:first-child {
                 display: flex;
                 flex-direction: column;
-                height: 90vh; /* Ocupa a maior parte da altura da tela */
+                
+                /* CORREÇÃO: Faz o container ocupar a altura quase total da tela */
+                /* Isso garante que o item no final seja empurrado para o fundo real da página */
+                height: calc(100vh - 2rem);
             }
 
             /* Alveja o ÚLTIMO container dentro da sidebar (nosso perfil) e o empurra para baixo */
