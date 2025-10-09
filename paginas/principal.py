@@ -52,7 +52,7 @@ if nome_do_modelo_selecionado != 'Nenhum (Criar novo)':
         st.session_state.modelo_carregado = modelo_ativo
 
     with st.expander(label = 'Clique aqui para visualizá-las',expanded=False, icon = '🔎'):
-        st.table(st.session_state.get('lista_de_variaveis', []))
+        st.table(st.session_state.get('lista_de_variaveis', []), border=False)
     
     col1, col2 = st.columns(2)
     with col1:
@@ -75,7 +75,7 @@ else:
         st.info('Nenhuma variável foi adicionada ainda.')
     else:
         with st.expander(label = 'Clique aqui para visualizá-las',expanded=False, icon = '🔎'):
-            st.table(st.session_state.lista_de_variaveis)
+            st.table(st.session_state.lista_de_variaveis, border=False)
 
     titulo_novo_modelo = st.text_input('Insira o nome do novo modelo *', key='titulo_novo')
     if titulo_novo_modelo:
