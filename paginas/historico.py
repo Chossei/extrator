@@ -52,13 +52,12 @@ if selecionado:
 
                 # UI: Usa tabs para separar a visualização dos dados e das variáveis
                 tab_dados, tab_variaveis = st.tabs(["Visualização da Base de Dados", "Variáveis do Modelo"])
-
+                variaveis = pd.DataFrame(buscar_variaveis_de_modelo(nome_do_modelo=selecionado))
                 with tab_dados:
                     st.dataframe(dataframe, use_container_width=True, hide_index=True)
                 
                 with tab_variaveis:
                     st.subheader("Variáveis usadas nesta extração:")
-                    variaveis = pd.DataFrame(buscar_variaveis_de_modelo(nome_do_modelo=selecionado))
                     # UI: Usa st.dataframe para consistência visual
                     st.dataframe(variaveis, use_container_width=True, hide_index=True)
                 
