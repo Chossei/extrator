@@ -53,7 +53,7 @@ if nome_do_modelo_selecionado != 'Nenhum (Criar novo)':
 
     with st.expander(label = 'Clique aqui para visualizá-las',expanded=False, icon = '🔎'):
         variaveis_df = pd.DataFrame(st.session_state.get('lista_de_variaveis', [])) 
-        st.table(variaveis_df.style.hide(axis='index'), border='horizontal')
+        st.dataframe(variaveis_df, hide_index = True)
     
     col1, col2 = st.columns(2)
     with col1:
@@ -77,7 +77,7 @@ else:
     else:
         with st.expander(label = 'Clique aqui para visualizá-las',expanded=False, icon = '🔎'):
             variaveis_df = pd.DataFrame(st.session_state.lista_de_variaveis)
-            st.table(variaveis_df.style.hide(axis='index'), border='horizontal')
+            st.dataframe(variaveis_df, hide_index = True)
 
     titulo_novo_modelo = st.text_input('Insira o nome do novo modelo *', key='titulo_novo')
     if titulo_novo_modelo:
