@@ -24,7 +24,6 @@ st.divider()
 # CÓDIGO CORRIGIDO -----------------
 
 # --- SELEÇÃO E CRIAÇÃO DE MODELOS ---
-
 # Verificando se existem modelos de variáveis já prontos
 opcoes = ['Nenhum (Criar novo)']
 if verificar_existencia_modelos():

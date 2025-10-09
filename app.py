@@ -83,8 +83,8 @@ else:
     
     referencia_id = usuario_login()
     paginas = {
-        'Menu' : [st.Page('paginas/principal.py', title = 'Extração dinâmica de dados', default = True),
-        st.Page('paginas/historico.py', title = 'Visualização de extrações anteriores')]
+        'Menu' : [st.Page('paginas/principal.py', title = 'Início', default = True),
+        st.Page('paginas/historico.py', title = 'Histórico')]
     }
 
 
