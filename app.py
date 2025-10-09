@@ -81,6 +81,22 @@ if not st.user.is_logged_in:
             st.login()
 else:
     
+    # BLOCO CSS #
+    st.markdown("""
+        <style>
+            /* Alveja o container principal da sidebar e o transforma em um flex container vertical */
+            [data-testid="stSidebar"] > div:first-child {
+                display: flex;
+                flex-direction: column;
+                height: 90vh; /* Ocupa a maior parte da altura da tela */
+            }
+
+            /* Alveja o ÚLTIMO container dentro da sidebar (nosso perfil) e o empurra para baixo */
+            [data-testid="stSidebar"] > div:first-child > div:last-child {
+                margin-top: auto;
+            }
+        </style>
+        """, unsafe_allow_html=True)
     referencia_id = usuario_login()
     with st.sidebar:
         with st.container():
