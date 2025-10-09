@@ -83,15 +83,21 @@ else:
     
     referencia_id = usuario_login()
     with st.sidebar:
+        with st.container():
+        st.divider() # Uma linha para separar visualmente
+        
+        # O HTML para a imagem e o nome
         st.markdown(
             f"""
-            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <img src="{st.user.picture}" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-                <div style="font-weight: bold;">Olá, {st.user.name}</div>
+                <div>Olá, <strong>{st.user.name}</strong></div>
             </div>
             """,
             unsafe_allow_html=True
         )
+        
+        # O botão de logout
         if st.button('Log out', use_container_width=True):
             st.logout()
     
