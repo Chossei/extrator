@@ -8,7 +8,7 @@ import io
 import json
 import fitz
 from google.generativeai import types
-from pydantic import create_model
+from pydantic import create_model, Field
 from pdf2image import convert_from_bytes
 
 @st.dialog('📝 Adicionar Novas Variáveis', width='large')
@@ -185,9 +185,10 @@ def estruturador(texto, variaveis):
   field_definitions = {}
   for var in variaveis:
     nome = var['nome']
+    descricao = var.get('descricao', f'Informação sobre {nome}')
     tipo_py = type_mapping.get(var.get('tipo', 'string').lower(), str)
     # A tupla (tipo, ...) significa que o campo e obrigatorio.
-    field_definitions[nome] = (tipo_py, ...)
+    field_definitions[nome] = (tipo_py, Field(..., description=descricao))
 
 
   # 3. Usa create_model do Pydantic para criar a classe do schema
