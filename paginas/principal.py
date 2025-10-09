@@ -99,10 +99,11 @@ pdf = st.file_uploader(label="Faça o upload do seu arquivo PDF", type='pdf')
 if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
     if st.button('Salvar informações no banco de dados', use_container_width=True):
         
+        with st.spinner('Extraindo o texto do documento...', show_time = True)
         texto = extrator_texto(pdf, imagem = 'texto/imagens')
         st.success('Pronto! A extração foi realizada com sucesso.')
 
-        with st.spinner('Estruturando as variáveis...'):
+        with st.spinner('Estruturando as variáveis...', show_time = True):
             dados_extraidos = estruturador(texto, variaveis=st.session_state.lista_de_variaveis)
             
             # CORREÇÃO 1 e 3: Usar 'modelo_ativo' e salvar a extração
