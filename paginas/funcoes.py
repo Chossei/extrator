@@ -2,7 +2,6 @@ import streamlit as st
 import time
 import pandas as pd
 import numpy as np
-import google.generativeai as genai
 import io
 import json
 from google import genai
