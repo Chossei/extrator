@@ -31,7 +31,8 @@ def usuario_login():
 
         if not doc.exists:
             doc_ref.set({
-                'email': email_usuario
+                'email': email_usuario,
+                'cadastro em': firestore.SERVER_TIMESTAMP 
             })
         return doc_ref
     except Exception as e:
