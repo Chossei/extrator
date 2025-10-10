@@ -2,15 +2,11 @@ import streamlit as st
 import time
 import pandas as pd
 import numpy as np
-import PyPDF2
 import google.generativeai as genai
 import io
 import json
-import fitz
 from google import genai
 from google.genai import types
-from pydantic import create_model, Field
-from pdf2image import convert_from_bytes
 
 @st.dialog('📝 Adicionar Novas Variáveis', width='large')
 def adicionar_variavel():
