@@ -99,7 +99,7 @@ if pdf and st.session_state.get('lista_de_variaveis') and modelo_ativo:
     if st.button('Salvar informações no banco de dados', use_container_width=True):
         
         with st.spinner('Extraindo as informações no documento...', show_time = True):
-            dados_extraidos = estruturador_atualizado(pdf = pdf.getvalue(), variaveis = st.session_state.lista_de_variaveis)
+            dados_extraidos = estruturador_atualizado(pdf = pdf, variaveis = st.session_state.lista_de_variaveis)
             # CORREÇÃO 1 e 3: Usar 'modelo_ativo' e salvar a extração
             salvar_extracao(nome_modelo_usado=modelo_ativo, nome_arquivo=pdf.name, dados_extraidos=dados_extraidos)
             st.success('Ótimo! As variáveis configuradas foram encontradas e armazenadas!')

@@ -478,7 +478,7 @@ def estruturador_atualizado(pdf, variaveis):
     
     # Lógica para a API File
     # Se maior de 10MB, utiliza API para grandes arquivos
-    tamanho_arquivo = len(pdf)
+    tamanho_arquivo = pdf.size
     limiar = 15 * 1048576
 
     if tamanho_arquivo < limiar:
@@ -486,7 +486,7 @@ def estruturador_atualizado(pdf, variaveis):
             model = 'gemini-2.5-flash',
             contents = [
                 types.Part.from_bytes(
-                    data = pdf,
+                    data = pdf.get_value(),
                     mime_type = 'application/pdf'
                 ),
                 prompt
