@@ -498,7 +498,7 @@ def estruturador_atualizado(pdf, variaveis):
             }
         )
     else:
-        with tempfile.NamedTemporaryFile(delet=False, suffix='.pdf') as tmp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
             tmp_file.write(pdf.get_value())
             caminho_arquivo = tmp_file.name
 
