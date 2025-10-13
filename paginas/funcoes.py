@@ -478,7 +478,7 @@ def estruturador_atualizado(pdf, variaveis):
     
     # Lógica para a API File
     # Se maior de 10MB, utiliza API para grandes arquivos
-    tamanho_arquivo = pdf.size
+    tamanho_arquivo = len(pdf)
     limiar = 15 * 1048576
 
     if tamanho_arquivo < limiar:
