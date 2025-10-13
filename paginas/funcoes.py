@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import io
 import json
+import tempfile
 from google import genai
 from google.genai import types
 
@@ -497,17 +498,23 @@ def estruturador_atualizado(pdf, variaveis):
             }
         )
     else:
-        conteudo_pdf = client.files.upload(
-            file = pdf
-        )
+        with tempfile.NamedTemporaryFile(delet=False, suffix='.pdf') as tmp_file:
+            tmp_file.write(pdf.get_value())
+            caminho_arquivo = tmp_file.name
 
-        response = client.models.generate_content(
-            model = 'gemini-2.5-flash',
-            contents = [conteudo_pdf, prompt],
-            config = {
-                'response_mime_type' : 'application/json',
-                'response_schema' : esquema
-            }
-        )
+        try:
+            conteudo_pdf = client.files.upload(
+                file = caminho_arquivo
+            )
 
+            response = client.models.generate_content(
+                model = 'gemini-2.5-flash',
+                contents = [conteudo_pdf, prompt],
+                config = {
+                    'response_mime_type' : 'application/json',
+                    'response_schema' : esquema
+                }
+            )
+        finally:
+            os.remove(caminho_arquivo)
     return json.loads(response.text) 
