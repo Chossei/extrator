@@ -487,7 +487,7 @@ def estruturador_atualizado(pdf, variaveis):
             model = 'gemini-2.5-flash',
             contents = [
                 types.Part.from_bytes(
-                    data = pdf.get_value(),
+                    data = pdf.getvalue(),
                     mime_type = 'application/pdf'
                 ),
                 prompt
@@ -499,7 +499,7 @@ def estruturador_atualizado(pdf, variaveis):
         )
     else:
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
-            tmp_file.write(pdf.get_value())
+            tmp_file.write(pdf.getvalue())
             caminho_arquivo = tmp_file.name
 
         try:
