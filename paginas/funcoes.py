@@ -475,21 +475,39 @@ def estruturador_atualizado(pdf, variaveis):
     -Formatação de Strings: Todas as strings no JSON final devem iniciar com letra maiúscula.
     -Limpeza do Conteúdo: O conteúdo extraído deve ser limpo, sem conter caracteres de formatação (como Markdown |, ---, *, etc.).
         """
+    
+    # Lógica para a API File
+    # Se maior de 10MB, utiliza API para grandes arquivos
+    tamanho_arquivo = pdf.size
+    limiar = 15 * 1048576
 
-    response = client.models.generate_content(
-        model = 'gemini-2.5-flash',
-        contents = [
-            types.Part.from_bytes(
-                data = pdf,
-                mime_type = 'application/pdf'
-            ),
-            prompt
-        ],
-        config = {
-            'response_mime_type': 'application/json',
-            'response_schema': esquema
-        }
-    )
+    if tamanho_arquivo < limiar:
+        response = client.models.generate_content(
+            model = 'gemini-2.5-flash',
+            contents = [
+                types.Part.from_bytes(
+                    data = pdf,
+                    mime_type = 'application/pdf'
+                ),
+                prompt
+            ],
+            config = {
+                'response_mime_type': 'application/json',
+                'response_schema': esquema
+            }
+        )
+    else:
+        conteudo_pdf = client.files.upload(
+            file = pdf
+        )
 
+        response = client.models.generate_content(
+            model = 'gemini-2.5-flash',
+            contents = [conteudo_pdf, prompt],
+            config = {
+                'response_mime_type' : 'application/json',
+                'response_schema' : esquema
+            }
+        )
 
     return json.loads(response.text) 
