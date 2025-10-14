@@ -472,7 +472,6 @@ def estruturador_atualizado(pdf, variaveis):
     -Exclusão: Ignore informações genéricas de cabeçalhos, rodapés e seções de referências bibliográficas do documento.
 
     REGRAS DE GERAÇÃO DO OBJETO JSON:
-    -Estrutura da Saída: A saída deve ser um único objeto JSON, não um array.
     -Valores Ausentes: Se uma informação para um campo do schema não for encontrada no documento, o valor para esse campo deve ser a string "Não encontrado".
     -Formatação de Strings: Todas as strings no JSON final devem iniciar com letra maiúscula.
     -Limpeza do Conteúdo: O conteúdo extraído deve ser limpo, sem conter caracteres de formatação (como Markdown |, ---, *, etc.).
