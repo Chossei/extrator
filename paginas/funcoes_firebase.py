@@ -321,10 +321,8 @@ def criar_base(nome_modelo_usado: str) -> pd.DataFrame | None:
             nome_do_pdf = dados.get('nome_arquivo', 'N/A')
             # Verifica se o documento possui a chave 'dados_extraidos' e se seu valor é uma lista.
             if "dados_extraidos" in dados and isinstance(dados['dados_extraidos'], list):
-                # Usa .extend() para adicionar os itens da lista interna à lista principal.
-                lista_dados.extend(dados['dados_extraidos'])
                 for item_extraido in dados['dados_extraidos']:
-                    lista_dados.append({'PDf' : nome_do_pdf, **item_extraido})
+                    lista_dados.append({'PDF' : nome_do_pdf, **item_extraido})
         
         # --- Criação do DataFrame ---
         # Converte a lista consolidada de dicionários em um DataFrame do Pandas.
