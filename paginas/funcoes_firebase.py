@@ -318,7 +318,7 @@ def criar_base(nome_modelo_usado: str) -> pd.DataFrame | None:
         lista_dados = []
         for documento in docs_encontrados:
             dados = documento.to_dict()
-            nome_do_pdf = dados.get('nome_arquivo', 'N/A')
+            nome_do_pdf = dados.get('nome_arquivo', 'Nome não encontrado')
             # Verifica se o documento possui a chave 'dados_extraidos' e se seu valor é uma lista.
             if "dados_extraidos" in dados and isinstance(dados['dados_extraidos'], list):
                 for item_extraido in dados['dados_extraidos']:
