@@ -460,7 +460,7 @@ def estruturador_atualizado(pdf, variaveis):
 
     # Modelo ---------------
 
-    client = genai.Client(api_key = 'AIzaSyDon5TniEuUX-rYbjZncnhg2mQMfj1k_TQ')
+    client = genai.Client(api_key = st.secrets('GEMINI_API_KEY'))
 
     prompt = """Você é um assistente de IA especialista em extração de dados de documentos. Sua tarefa é analisar o documento fornecido para extrair informações sobre um único indivíduíduo, formatando a saída como um único objeto JSON que segue estritamente o schema fornecido.
     REGRAS DE INTERPRETAÇÃO DO DOCUMENTO:
